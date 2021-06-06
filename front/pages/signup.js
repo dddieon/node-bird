@@ -1,5 +1,15 @@
-const Signup = () => {
-  return <div>회원가입 페이지</div>
-}
+import React from "react";
+import Head from "next/head";
 
-export default Signup
+import AppLayout from "../components/AppLayout";
+
+const Signup = () => (
+  <AppLayout>
+    <Head>
+      <title>회원가입</title>
+    </Head>
+    <div>회원가입</div>
+  </AppLayout>
+);
+
+export default Signup;
