@@ -16,8 +16,7 @@ const dummy = {
 };
 
 const AppLayout = ({ children }) => {
-  const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
-  console.log(isLoggedIn, "로그인 여부");
+  const { isLoggedIn } = useSelector((state) => state.user);
 
   return (
     <div>
