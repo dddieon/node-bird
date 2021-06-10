@@ -1,7 +1,7 @@
 import { Avatar, Card, Button } from "antd";
 import React, { useCallback } from "react";
 import { useDispatch } from "react-redux";
-import { loginAction } from "../reducers";
+import { logoutAction } from "../reducers";
 
 const dummy = {
   nickname: "제로초",
@@ -14,7 +14,7 @@ const dummy = {
 const UserProfile = () => {
   const dispatch = useDispatch();
   const onLogout = useCallback(() => {
-    dispatch(loginAction());
+    dispatch(logoutAction());
   }, []);
   return (
     <Card
@@ -40,7 +40,7 @@ const UserProfile = () => {
         avatar={<Avatar>{dummy.nickname[0]}</Avatar>}
         title={dummy.nickname}
       />
-      <Button>로그아웃</Button>
+      <Button onClick={onLogout}>로그아웃</Button>
     </Card>
   );
 };

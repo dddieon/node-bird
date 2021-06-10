@@ -3,7 +3,7 @@ import { Button, Form, Input } from "antd";
 import Link from "next/link";
 import { useDispatch } from "react-redux";
 
-import loginAction from "../reducers";
+import { loginAction } from "../reducers";
 import useInput from "../hooks/useInput";
 
 const LoginForm = () => {
@@ -11,6 +11,7 @@ const LoginForm = () => {
   const [id, onChangeId] = useInput("");
   const [password, onChangePassword] = useInput("");
   const onSubmitForm = useCallback(() => {
+    console.log("login");
     dispatch(loginAction({ id, password }));
   }, [id, password]);
 
