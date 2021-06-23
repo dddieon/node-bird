@@ -11,7 +11,6 @@ const LoginForm = () => {
   const [id, onChangeId] = useInput("");
   const [password, onChangePassword] = useInput("");
   const onSubmitForm = useCallback(() => {
-    console.log("login");
     dispatch(loginAction({ id, password }));
   }, [id, password]);
 

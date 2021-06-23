@@ -7,9 +7,7 @@ const CommentForm = ({ post }) => {
   const id = useSelector((state) => state.user.me?.id);
   const [commentText, setCommentText] = useState("");
 
-  const onSubmitComment = useCallback(() => {
-    console.log(commentText);
-  }, [commentText]);
+  const onSubmitComment = useCallback(() => {}, [commentText]);
 
   const onChangeCommentText = useCallback((e) => {
     setCommentText(e.target.value);
