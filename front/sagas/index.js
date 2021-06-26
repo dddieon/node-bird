@@ -1,4 +1,4 @@
-import { all, fork, take, call, put } from "redux-saga/effects";
+import { all, fork, takeEvery, call, put, delay } from "redux-saga/effects";
 import axios from "axios";
 
 // 1. all은 배열을 받아와 한꺼번에 실행
@@ -12,14 +12,35 @@ function logInAPI(data) {
 
 function* logIn(action) {
   try {
-    const result = yield call(logInAPI, action.data);
+    yield delay(1000);
+    //const result = yield call(logInAPI, action.data);
     yield put({
       type: "LOGIN_SUCCESS",
-      data: result.data, //성공결과
+      //data: result.data, //성공결과
     });
   } catch (e) {
     yield put({
       type: "LOG_IN_FAILURE",
+      data: e.response.data, //실패결과
+    });
+  }
+}
+
+function logOutAPI(data) {
+  return axios.post("/api/logout", data);
+}
+
+function* logOut(action) {
+  try {
+    yield delay(1000);
+    //const result = yield call(logOutAPI, action.data);
+    yield put({
+      type: "LOG_OUT_SUCCESS",
+      //data: result.data, //성공결과
+    });
+  } catch (e) {
+    yield put({
+      type: "LOG_OUT_FAILURE",
       data: e.response.data, //실패결과
     });
   }
@@ -31,10 +52,11 @@ function addPostAPI(data) {
 
 function* addPost(action) {
   try {
-    const result = yield call(addPostAPI, action.data);
+    yield delay(1000);
+    //const result = yield call(addPostAPI, action.data);
     yield put({
       type: "ADD_POST_SUCCESS",
-      data: result.data, //성공결과
+      //data: result.data, //성공결과
     });
   } catch (e) {
     yield put({
@@ -46,15 +68,15 @@ function* addPost(action) {
 
 function* watchLogin() {
   //이벤트리스너처럼 동작: 비동기액션생성함수가 "특정이벤트" 감지(두번째 매개변수 logIn을 감지한다)
-  yield take("LOG_IN_REQUEST", logIn);
+  yield takeEvery("LOG_IN_REQUEST", logIn);
 }
 
 function* watchLogOut() {
-  yield take("LOG_OUT_REQUEST");
+  yield takeEvery("LOG_OUT_REQUEST", logOut);
 }
 
 function* watchAddPost() {
-  yield take("ADD_POST_REQUEST");
+  yield takeEvery("ADD_POST_REQUEST", addPost);
 }
 
 export default function* rootSaga() {
