@@ -7,6 +7,8 @@ import {
   LOG_OUT_FAILURE,
   LOG_OUT_REQUEST,
   LOG_OUT_SUCCESS,
+  SIGN_UP_FAILURE,
+  SIGN_UP_SUCCESS,
 } from "../reducers/user";
 
 // 1. all은 배열을 받아와 한꺼번에 실행
@@ -14,21 +16,40 @@ import {
 // 3. take는 액션을 기다림
 // 4. put은 dispatch라고 보면 됨
 
-function logInAPI(data) {
-  return axios.post("/api/login", data);
+function signUpAPI(data) {
+  return axios.post("/api/signUp", data);
 }
 
-function* logIn(action) {
+function* signUp(action) {
   try {
     yield delay(1000);
-    //const result = yield call(logInAPI, action.data);
+    //const result = yield call(signUpAPI, action.data);
     yield put({
-      type: LOG_IN_SUCCESS,
-      data: action.data, //성공결과
+      type: SIGN_UP_SUCCESS,
     });
   } catch (e) {
     yield put({
-      type: LOG_IN_FAILURE,
+      type: SIGN_UP_FAILURE,
+      error: e.response.data, //실패결과
+    });
+  }
+}
+
+function logOutAPI(data) {
+  return axios.post("/api/logout", data);
+}
+
+function* logOut(action) {
+  try {
+    yield delay(1000);
+    //const result = yield call(logOutAPI, action.data);
+    yield put({
+      type: LOG_OUT_SUCCESS,
+      //data: result.data, //성공결과
+    });
+  } catch (e) {
+    yield put({
+      type: LOG_OUT_FAILURE,
       error: e.response.data, //실패결과
     });
   }
@@ -63,6 +84,10 @@ function* watchLogOut() {
   yield takeEvery(LOG_OUT_REQUEST, logOut);
 }
 
+function* watchSignUp() {
+  yield takeEvery(LOG_OUT_REQUEST, signUp);
+}
+
 export default function* userSaga() {
-  yield all([fork(watchLogin), fork(watchLogOut)]);
+  yield all([fork(watchLogin), fork(watchLogOut), fork(watchSignUp)]);
 }
