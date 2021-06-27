@@ -39,11 +39,14 @@ export const initialState = {
   postAdded: false, //게시글 추가 완료
 };
 
-const ADD_POST = "ADD_POST";
+export const ADD_POST_REQUEST = "ADD_POST_REQUEST";
+export const ADD_POST_SUCCESS = "ADD_POST_SUCCESS";
+export const ADD_POST_FAILURE = "ADD_POST_FAILURE";
 
-export const addPost = {
-  type: ADD_POST,
-};
+export const addPost = (data) => ({
+  type: ADD_POST_REQUEST,
+  data,
+});
 
 const dummyPost = {
   id: 2,
@@ -57,12 +60,16 @@ const dummyPost = {
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case ADD_POST:
+    case ADD_POST_REQUEST:
+      return {};
+    case ADD_POST_SUCCESS:
       return {
         ...state,
         mainPosts: [dummyPost, ...state.mainPosts],
         postAdded: true,
       };
+    case ADD_POST_FAILURE:
+      return {};
     default:
       return state;
   }
