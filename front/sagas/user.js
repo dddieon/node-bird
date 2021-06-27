@@ -35,21 +35,21 @@ function* signUp(action) {
   }
 }
 
-function logOutAPI(data) {
-  return axios.post("/api/logout", data);
+function logInAPI(data) {
+  return axios.post("/api/logIn", data);
 }
 
-function* logOut(action) {
+function* logIn(action) {
   try {
     yield delay(1000);
-    //const result = yield call(logOutAPI, action.data);
+    //const result = yield call(logInAPI, action.data);
     yield put({
-      type: LOG_OUT_SUCCESS,
+      type: LOG_IN_SUCCESS,
       //data: result.data, //성공결과
     });
   } catch (e) {
     yield put({
-      type: LOG_OUT_FAILURE,
+      type: LOG_IN_FAILURE,
       error: e.response.data, //실패결과
     });
   }
