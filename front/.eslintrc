@@ -1,4 +1,5 @@
 {
+  "parser": "babel-eslint", // 최신문법에 대한 에러 x
   "parserOptions": {
     "ecmaVersion": 2020,
     "sourceType": "module",
@@ -12,15 +13,26 @@
     "es6": true
   },
   "extends": [
-    "eslint:recommended",
-    "plugin:react/recommended"
+    "airbnb"
   ],
-  "rules": {
-    "react/react-in-jsx-scope": 0, // REACT IMPRT NOT REQUIRED
-    "linebreak-style": 0
-  },
   "plugins": [
     "import",
     "react-hooks"
-  ]
+  ],
+  "rules": {
+    "jsx-a11y/label-has-associated-control": "off",
+    "jsx-a11y/anchor-is-valid": "off",
+    "no-console": "off",
+    "no-underscore-dangle": "off",
+    "react/forbid-propTypes": "off",
+    "react/require-default-props": "off",
+    "react/jsx-one-expression-per-line": "off",
+    "react/jsx-filename-extension": "off",
+    "object-curly-newline": "off",
+    "linebreak-style": "off",
+    "comma-dangle": "off",
+    "quotes": [2, "double", { "avoidEscape": false }],
+    "import/order": "off",
+    "spaced-comment": "off"
+  }
 }

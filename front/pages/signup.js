@@ -35,7 +35,7 @@ const Signup = () => {
     if (!term) {
       return setTermError(true);
     }
-    dispatch({
+    return dispatch({
       type: SIGN_UP_REQUEST,
       data: { email, password, nickname },
     });
