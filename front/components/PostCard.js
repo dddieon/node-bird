@@ -15,19 +15,21 @@ import CommentForm from "./CommentForm";
 import PostCardContent from "./PostCardContent";
 import PostImages from "./PostImages";
 import FollowButton from "./FollowButton";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const CardWrapper = styled.div`
   margin-bottom: 20px;
 `;
 
 const PostCard = ({ post }) => {
+  const dispatch = useDispatch();
   const [commentFormOpened, setCommentFormOpened] = useState(false);
   const [liked, setLiked] = useState(false);
 
   const id = useSelector((state) => {
     return state.user.me?.id;
   });
+  const { removePostLoading } = useSelector((state) => state.post);
 
   const onToggleLike = useCallback(() => {
     setLiked((prev) => !prev);
@@ -36,6 +38,13 @@ const PostCard = ({ post }) => {
   const onToggleComment = useCallback(() => {
     setCommentFormOpened((prev) => !prev);
   }, []);
+
+  const onRemovePost = useCallback(() => {
+    dispatch({
+      type: "REMOVE_POST_REQUEST",
+      data: post.id,
+    });
+  });
 
   return (
     <CardWrapper key={post.id}>
@@ -60,7 +69,13 @@ const PostCard = ({ post }) => {
                 {id && post.User.id === Number(id) ? ( // 추후 로그인 dummy 변경되면 수정
                   <>
                     <Button>수정</Button>
-                    <Button danger>삭제</Button>
+                    <Button
+                      loading={removePostLoading}
+                      danger
+                      onClick={onRemovePost}
+                    >
+                      삭제
+                    </Button>
                   </>
                 ) : (
                   <Button>신고</Button>
