@@ -8,6 +8,7 @@ import {
   LOG_OUT_REQUEST,
   LOG_OUT_SUCCESS,
   SIGN_UP_FAILURE,
+  SIGN_UP_REQUEST,
   SIGN_UP_SUCCESS,
 } from "../reducers/user";
 
@@ -85,7 +86,7 @@ function* watchLogOut() {
 }
 
 function* watchSignUp() {
-  yield takeEvery(LOG_OUT_REQUEST, signUp);
+  yield takeEvery(SIGN_UP_REQUEST, signUp);
 }
 
 export default function* userSaga() {
