@@ -33,11 +33,11 @@
     "import/order": "off",
     "spaced-comment": "off",
     "no-param-reassign": "off",
-    "implicit-arrow-linebreak": "off"
+    "implicit-arrow-linebreak": "off",
+    "end-of-line": "off",
+    "consistent-return": "off"
   },
   "extends": [
     "airbnb",
-    "plugin:prettier/recommended",
-    "prettier"
   ]
 }
