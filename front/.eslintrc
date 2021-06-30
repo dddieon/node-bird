@@ -33,6 +33,7 @@
     "comma-dangle": "off",
     "quotes": [2, "double", { "avoidEscape": false }],
     "import/order": "off",
-    "spaced-comment": "off"
+    "spaced-comment": "off",
+    "no-param-reassign": "off"
   }
 }
