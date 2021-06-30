@@ -12,10 +12,8 @@
     "node": true,
     "es6": true
   },
-  "extends": [
-    "airbnb"
-  ],
   "plugins": [
+    "prettier",
     "import",
     "react-hooks"
   ],
@@ -34,6 +32,12 @@
     "quotes": [2, "double", { "avoidEscape": false }],
     "import/order": "off",
     "spaced-comment": "off",
-    "no-param-reassign": "off"
-  }
+    "no-param-reassign": "off",
+    "implicit-arrow-linebreak": "off"
+  },
+  "extends": [
+    "airbnb",
+    "plugin:prettier/recommended",
+    "prettier"
+  ]
 }
