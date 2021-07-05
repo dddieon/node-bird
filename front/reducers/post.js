@@ -3,49 +3,12 @@ import produce from "immer";
 import faker from "faker";
 
 export const initialState = {
-  mainPosts: [
-    // 소문자: 포스트만 가지는 유니크한 정보. (시퀄라이즈 관련)
-    {
-      id: 1,
-      User: {
-        id: 1,
-        nickname: "제로초",
-      },
-      content: "첫번째 게시글 #해시태그 #익스프레스",
-      Images: [
-        {
-          id: shortId.generate(),
-          src: "https://via.placeholder.com/300.png",
-        },
-        {
-          id: shortId.generate(),
-          src: "https://via.placeholder.com/400.png",
-        },
-        {
-          id: shortId.generate(),
-          src: "https://via.placeholder.com/600.png",
-        },
-      ],
-      Comments: [
-        {
-          id: shortId.generate(),
-          User: {
-            id: shortId.generate(),
-            nickname: "hero",
-          },
-          content: "얼른 사고 싶어요~",
-        },
-        {
-          User: {
-            id: shortId.generate(),
-            nickname: "mini",
-          },
-          content: "nice~ 니쎄~",
-        },
-      ],
-    },
-  ],
+  mainPosts: [],
   imagePaths: [],
+  hasMorePost: false, // false면 무한스크롤 로드 x
+  loadPostLoading: false,
+  loadPostDone: false,
+  loadPostError: null,
   addPostLoading: false,
   addPostDone: false,
   addPostError: null,
@@ -54,8 +17,8 @@ export const initialState = {
   addCommentError: null,
 };
 
-initialState.mainPosts = initialState.mainPosts.concat(
-  Array(20)
+export const generateDummyPost = (number) =>
+  Array(number)
     .fill()
     .map(() => ({
       id: shortId.generate(),
@@ -80,8 +43,11 @@ initialState.mainPosts = initialState.mainPosts.concat(
           content: faker.lorem.sentence(),
         },
       ],
-    }))
-);
+    }));
+
+export const LOAD_POST_REQUEST = "LOAD_POST_REQUEST";
+export const LOAD_POST_SUCCESS = "LOAD_POST_SUCCESS";
+export const LOAD_POST_FAILURE = "LOAD_POST_FAILURE";
 
 export const ADD_POST_REQUEST = "ADD_POST_REQUEST";
 export const ADD_POST_SUCCESS = "ADD_POST_SUCCESS";
@@ -128,6 +94,22 @@ const dummyComment = (data) => ({
 const reducer = (state = initialState, action) => {
   return produce(state, (draft) => {
     switch (action.type) {
+      case LOAD_POST_REQUEST:
+        draft.loadPostLoading = true;
+        draft.loadPostDone = false;
+        draft.loadPostError = null;
+        break;
+      case LOAD_POST_SUCCESS:
+        draft.loadPostLoading = false;
+        draft.loadPostDone = true;
+        draft.mainPosts = action.data.concat(draft.mainPosts);
+        draft.hasMorePost = draft.mainPosts.length < 50; // 무한스크롤 중단
+        break;
+      case LOAD_POST_FAILURE:
+        draft.addPostLoading = false;
+        draft.addPostDone = false;
+        draft.addPostError = action.error;
+        break;
       case ADD_POST_REQUEST:
         draft.addPostLoading = true;
         draft.addPostDone = false;
