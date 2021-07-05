@@ -1,6 +1,5 @@
 import React, { useState, useCallback } from "react";
 import { Card, Button, Avatar, Popover, List, Comment } from "antd";
-import PropTypes from "prop-types";
 import {
   RetweetOutlined,
   HeartTwoTone,
@@ -66,7 +65,7 @@ const PostCard = ({ post }) => {
             key="ellipsis"
             content={
               <Button.Group>
-                {id && post.User.id === Number(id) ? ( // 추후 로그인 dummy 변경되면 수정
+                {id && post.User.id === id ? ( // 추후 로그인 dummy 변경되면 수정
                   <>
                     <Button>수정</Button>
                     <Button
@@ -86,7 +85,7 @@ const PostCard = ({ post }) => {
             <EllipsisOutlined />
           </Popover>,
         ]}
-        extra={<FollowButton post={post} />}
+        extra={id && <FollowButton post={post} />}
       >
         <Card.Meta
           avatar={<Avatar>{post.User.nickname[0]}</Avatar>}
@@ -124,22 +123,6 @@ const PostCard = ({ post }) => {
       )}
     </CardWrapper>
   );
-};
-
-PostCard.propTypes = {
-  post: PropTypes.shape({
-    // object를 구체적으로 = shape
-    id: PropTypes.number,
-    User: PropTypes.object,
-    content: PropTypes.string,
-    Images: PropTypes.arrayOf(
-      PropTypes.shape({
-        src: PropTypes.string,
-      })
-    ),
-    createdAt: PropTypes.object,
-    Comments: PropTypes.object,
-  }),
 };
 
 export default PostCard;

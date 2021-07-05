@@ -16,7 +16,56 @@ import {
   LOAD_POST_FAILURE,
   generateDummyPost,
 } from "../reducers/post";
-import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from "../reducers/user";
+import {
+  ADD_POST_TO_ME,
+  FOLLOW_FAILURE,
+  FOLLOW_REQUEST,
+  FOLLOW_SUCCESS,
+  REMOVE_POST_OF_ME,
+  UNFOLLOW_FAILURE,
+  UNFOLLOW_REQUEST,
+  UNFOLLOW_SUCCESS,
+} from "../reducers/user";
+
+function unFollowAPI(data) {
+  return axios.post("/api/unfollow", data);
+}
+
+function* unFollow(action) {
+  try {
+    yield delay(1000);
+    //const result = yield call(unFollowAPI, action.data);
+    yield put({
+      type: UNFOLLOW_SUCCESS,
+      data: action.data,
+    });
+  } catch (e) {
+    yield put({
+      type: UNFOLLOW_FAILURE,
+      data: e.response.data, //실패결과
+    });
+  }
+}
+
+function followAPI(data) {
+  return axios.post("/api/follow", data);
+}
+
+function* follow(action) {
+  try {
+    yield delay(1000);
+    //const result = yield call(followAPI, action.data);
+    yield put({
+      type: FOLLOW_SUCCESS,
+      data: action.data,
+    });
+  } catch (e) {
+    yield put({
+      type: FOLLOW_FAILURE,
+      data: e.response.data, //실패결과
+    });
+  }
+}
 
 function loadPostAPI(data) {
   return axios.get("/api/post", data);
@@ -25,7 +74,7 @@ function loadPostAPI(data) {
 function* loadPost(action) {
   try {
     yield delay(1000);
-    //const result = yield call(addPostAPI, action.data);
+    //const result = yield call(loadPostAPI, action.data);
     yield put({
       type: LOAD_POST_SUCCESS,
       data: generateDummyPost(10),
@@ -73,7 +122,7 @@ function addCommentAPI(data) {
 function* addComment(action) {
   try {
     yield delay(1000);
-    //const result = yield call(addPostAPI, action.data);
+    //const result = yield call(addCommentAPI, action.data);
     yield put({
       type: ADD_COMMENT_SUCCESS,
       data: action.data,
@@ -110,6 +159,14 @@ function* removePost(action) {
   }
 }
 
+function* watchUnFollow() {
+  yield takeEvery(UNFOLLOW_REQUEST, unFollow);
+}
+
+function* watchFollow() {
+  yield takeEvery(FOLLOW_REQUEST, follow);
+}
+
 function* watchLoadPost() {
   yield takeEvery(LOAD_POST_REQUEST, loadPost);
 }
@@ -128,6 +185,8 @@ function* watchAddComment() {
 
 export default function* postSaga() {
   yield all([
+    fork(watchUnFollow),
+    fork(watchFollow),
     fork(watchAddPost),
     fork(watchAddComment),
     fork(watchRemovePost),
