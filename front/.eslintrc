@@ -12,8 +12,7 @@
     "node": true,
     "es6": true
   },
-  "plugins": [
-    "prettier",
+    "plugins": [
     "import",
     "react-hooks"
   ],
@@ -39,5 +38,6 @@
   },
   "extends": [
     "airbnb",
+    "prettier"
   ]
 }
