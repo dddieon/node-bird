@@ -9,6 +9,8 @@ module.exports = (sequelize, DataTypes) => {
     charset: "utf8",
     collate: "utf8",
   });
-  Image.associate = (db) => {};
+  Image.associate = (db) => {
+    db.Image.belongsTo(db.Post);
+  };
   return Image;
 }

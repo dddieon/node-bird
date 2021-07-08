@@ -20,6 +20,11 @@ module.exports = (sequelize, DataTypes) => {
     collate: 'utf8_general_ci', //한글사용 가능
   });
   User.associate = (db) => {
+    db.User.hasMany(db.Post);
+    db.User.hasMany(db.Comment);
+    db.User.belongsToMany(db.Post, {through: "Like", as: "Liked"}); // 좋아한 게시물들
+    db.User.belongsToMany(db.User, {through: "Follow", as: "Followers", foreignKey: "FollowingId"}); // 나의 팔로워들
+    db.User.belongsToMany(db.User, {through: "Follow", as: "Followings", foreignKey: "FollowerId"}); // 나의 팔로잉목록들
   };
   return User;
 }
