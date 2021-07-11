@@ -2,7 +2,7 @@ module.exports = (sequelize, DataTypes) => {
   const Post = sequelize.define('Post',{
     // id는 자동으로 저장
     content: {
-      type: DataTypes.Text,
+      type: DataTypes.STRING(1000),
       allowNull: false,
     },
   }, {
@@ -11,10 +11,10 @@ module.exports = (sequelize, DataTypes) => {
   });
   Post.associate = (db) => {
     db.Post.belongsTo(db.User); // 게시글 작성자 only
-    db.Post.belongsToMany(db.Hashtag);
+    db.Post.belongsToMany(db.Hashtag, {through: "PostHashtag"});
     db.Post.hasMany(db.Comment);
     db.Post.hasMany(db.Image);
-    db.Post.belongsToMany(db.Post, {as: "Retweet"}); // 리트윗 = 1:多 -> postId는 Retweet으로 변한다
+    db.Post.belongsToMany(db.Post, {through: "RetweetTable", as: "Retweet"}); // 리트윗 = 1:多 -> postId는 Retweet으로 변한다
     db.Post.belongsToMany(db.User, {through: "Like", as: 'Likers'}); // 좋아요는 여러 게시글에 여려사용자 가능
   };
   return Post;

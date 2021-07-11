@@ -2,7 +2,7 @@ module.exports = (sequelize, DataTypes) => {
   const Hashtag = sequelize.define("Hashtag",{
     // id는 자동으로 저장
     name: {
-      type: DataTypes.String(20),
+      type: DataTypes.STRING(20),
       allowNull: false,
     },
   }, {
@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
     collate: "utf8mb4_general_ci",  //이모티콘까지 가능
   });
   Hashtag.associate = (db) => {
-    db.Hashtag.belongsToMany(db.Post);
+    db.Hashtag.belongsToMany(db.Post, {through: "PostHashtag"});
   };
   return Hashtag;
 }

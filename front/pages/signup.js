@@ -72,7 +72,6 @@ const Signup = () => {
           <label htmlFor="user-nickname">닉네임</label>
           <br />
           <Input
-            type="email"
             name="user-nickname"
             value={nickname}
             required

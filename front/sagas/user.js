@@ -1,4 +1,4 @@
-import { all, fork, takeEvery, put, delay } from "redux-saga/effects";
+import { all, fork, takeEvery, put, delay, call  } from "redux-saga/effects";
 import axios from "axios";
 import {
   LOG_IN_FAILURE,
@@ -18,13 +18,13 @@ import {
 // 4. put은 dispatch라고 보면 됨
 
 function signUpAPI(data) {
-  return axios.post("/api/signUp", data);
+  return axios.post("http://localhost:3065/user", data);
 }
 
 function* signUp(action) {
   try {
-    yield delay(1000);
-    //const result = yield call(signUpAPI, action.data);
+    const result = yield call(signUpAPI, action.data);
+    console.log(result);
     yield put({
       type: SIGN_UP_SUCCESS,
     });
