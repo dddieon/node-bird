@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, {useState, useCallback, useEffect} from "react";
 import { Form, Input, Checkbox, Button } from "antd";
 import PropTypes from "prop-types";
 
@@ -6,10 +6,9 @@ import AppLayout from "../components/AppLayout";
 import useInput from "../hooks/useInput";
 import { SIGN_UP_REQUEST } from "../reducers/user";
 import { useDispatch, useSelector } from "react-redux";
+import {Router} from "next/router";
 
-const TextInput = ({ value }) => {
-  return <div>{value}</div>;
-};
+const TextInput = ({ value }) => <div>{value}</div>;
 
 TextInput.propTypes = {
   value: PropTypes.string,
@@ -17,7 +16,19 @@ TextInput.propTypes = {
 
 const Signup = () => {
   const dispatch = useDispatch();
-  const { signUpLoading } = useSelector((state) => state.user);
+  const { signUpLoading, signUpDone, signUpError } = useSelector((state) => state.user);
+
+  useEffect(() => {
+    if(signUpDone) {
+      Router.push("/")
+    }
+  }, [signUpDone])
+
+  useEffect(() => {
+    if(signUpError) {
+      alert(signUpError);
+    }
+  }, [signUpError])
 
   const [passwordCheck, setPasswordCheck] = useState("");
   const [term, setTerm] = useState(false);
