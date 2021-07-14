@@ -18,7 +18,7 @@ import {
 // 4. put은 dispatch라고 보면 됨
 
 function signUpAPI(data) {
-  return axios.post("http://localhost:3065/user", data);
+  return axios.post("/user", data);
 }
 
 function* signUp(action) {
@@ -37,16 +37,15 @@ function* signUp(action) {
 }
 
 function logInAPI(data) {
-  return axios.post("/api/logIn", data);
+  return axios.post("/user/login", data);
 }
 
 function* logIn(action) {
   try {
-    yield delay(1000);
-    //const result = yield call(logInAPI, action.data);
+    const result = yield call(logInAPI, action.data);
     yield put({
       type: LOG_IN_SUCCESS,
-      //data: result.data, //성공결과
+      data: result.data, //성공결과
     });
   } catch (e) {
     yield put({
@@ -57,7 +56,7 @@ function* logIn(action) {
 }
 
 function logOutAPI(data) {
-  return axios.post("/api/logout", data);
+  return axios.post("/logout", data);
 }
 
 function* logOut(action) {
