@@ -1,5 +1,9 @@
 const express = require('express');
 const cors = require('cors');
+const session = require('express-session');
+const cookieParser = require('cookie-parser');
+const passport = require('passport');
+
 const app = express();
 const db = require("./models");
 const passportConfig = require('./passport');
@@ -11,6 +15,14 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
+app.use(cookieParser());
+app.use(session({
+  saveUninitialized: false,
+  resave: false,
+  secret: "nodebirdsecret"
+}));
+app.use(passport.initialize());
+app.use(passport.session());
 
 db.sequelize.sync().then(()=>{
   console.log("db연결 성공")
