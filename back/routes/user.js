@@ -8,7 +8,6 @@ const router = express.Router();
 router.post("/login", (req, res, next) => {
   passport.authenticate('local', (err, user, info) => {
     if (err) { // 에러
-      console.error(err);
       next(err);
     }
     if (info) { // 요청/응답의 정보

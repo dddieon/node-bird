@@ -3,6 +3,8 @@ const cors = require('cors');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const passport = require('passport');
+const dotenv = require('dotenv');
+dotenv.config();
 
 const app = express();
 const db = require("./models");
@@ -19,7 +21,7 @@ app.use(cookieParser());
 app.use(session({
   saveUninitialized: false,
   resave: false,
-  secret: "nodebirdsecret"
+  secret: process.env.COOKIE_SECRET
 }));
 app.use(passport.initialize());
 app.use(passport.session());
