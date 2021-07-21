@@ -7,6 +7,37 @@ const db = require('../models');
 
 const router = express.Router();
 
+router.get("/", async (req,res) => { // loadMyInfo
+  try {
+    if (req.user) {
+      const fullUserWithoutPassword = await User.findOne({
+        where: {id: req.user.id},
+        attributes: {
+          exclude: ['password'] // --- 패스워드 컬럼 제외
+        },
+        include: [{
+          model: Post, // --- associate 되었던 테이블에서 id만 조인: 숫자만 세기
+          attributes: ['id'],
+        }, {
+          model: User,
+          attributes: ['id'],
+          as: 'Followings' // --- as는 모델정의와 동일하게
+        }, {
+          model: User,
+          attributes: ['id'],
+          as: 'Followers'
+        }]
+      })
+      res.status(200).json(fullUserWithoutPassword); // 프론트에 유저정보를 보낸다
+    } else {
+      req.status(200).json(null);
+    }
+  } catch(e) {
+    console.error(e);
+    next(e);
+  }
+})
+
 router.post("/login", isNotLoggedIn, (req, res, next) => {
   passport.authenticate('local', (err, user, info) => {
     if (err) { // 1. 에러
@@ -25,12 +56,15 @@ router.post("/login", isNotLoggedIn, (req, res, next) => {
           exclude: ['password'] // --- 패스워드 컬럼 제외
         },
         include: [{
-          model: Post // --- associate 되었던 테이블에서 조인
+          model: Post, // --- associate 되었던 테이블에서 조인
+          attributes: ['id'],
         }, {
           model: User,
+          attributes: ['id'],
           as: 'Followings' // --- as는 모델정의와 동일하게
         }, {
           model: User,
+          attributes: ['id'],
           as: 'Followers'
         }]
       })
@@ -46,7 +80,6 @@ router.post("/logout", isLoggedIn, (req, res, next) => {
 });
 
 router.post("/", isNotLoggedIn, async (req,res, next) => {
-  console.log(req, "요청")
   try {
     const exUser = await User.findOne({
       where: {
