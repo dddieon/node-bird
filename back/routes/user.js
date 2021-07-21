@@ -30,7 +30,7 @@ router.get("/", async (req,res) => { // loadMyInfo
       })
       res.status(200).json(fullUserWithoutPassword); // 프론트에 유저정보를 보낸다
     } else {
-      req.status(200).json(null);
+      res.status(200).json(null);
     }
   } catch(e) {
     console.error(e);
