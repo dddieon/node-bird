@@ -56,16 +56,15 @@ function* logIn(action) {
 }
 
 function logOutAPI(data) {
-  return axios.post("/logout", data);
+  return axios.post("/user/logout", data);
 }
 
 function* logOut(action) {
   try {
-    yield delay(1000);
-    //const result = yield call(logOutAPI, action.data);
+    const result = yield call(logOutAPI, action.data);
     yield put({
       type: LOG_OUT_SUCCESS,
-      //data: result.data, //성공결과
+      data: result.data, //성공결과
     });
   } catch (e) {
     yield put({

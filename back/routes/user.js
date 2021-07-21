@@ -38,6 +38,12 @@ router.post("/login", (req, res, next) => {
   })(req, res, next);
 });
 
+router.post("/logout", (req, res, next) => {
+  req.logout();
+  req.session.destroy();
+  res.send("logout ok");
+});
+
 router.post("/", async (req,res, next) => {
   console.log(req, "요청")
   try {
@@ -61,11 +67,5 @@ router.post("/", async (req,res, next) => {
     next(error); // status 500
   }
 });
-
-router.post("/user/logout", (req, res, next) => {
-  req.logout();
-  req.session.destroy();
-  res.send("logout ok");
-})
 
 module.exports = router;
