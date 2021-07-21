@@ -6,7 +6,7 @@ import AppLayout from "../components/AppLayout";
 import useInput from "../hooks/useInput";
 import { SIGN_UP_REQUEST } from "../reducers/user";
 import { useDispatch, useSelector } from "react-redux";
-import {useRouter} from "next/router";
+import Router from "next/router";
 
 const TextInput = ({ value }) => <div>{value}</div>;
 
@@ -16,12 +16,17 @@ TextInput.propTypes = {
 
 const Signup = () => {
   const dispatch = useDispatch();
-  const { signUpLoading, signUpDone, signUpError } = useSelector((state) => state.user);
-  const router = useRouter();
+  const { signUpLoading, signUpDone, signUpError, me } = useSelector((state) => state.user);
+
+  useEffect(() => {
+    if (me && me.id) {
+      Router.replace("/");
+    }
+  }, [me && me.id]);
 
   useEffect(() => {
     if(signUpDone) {
-      router.push("/")
+      Router.push("/")
     }
   }, [signUpDone])
 

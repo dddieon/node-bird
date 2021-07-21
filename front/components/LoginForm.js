@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useEffect, useCallback } from "react";
 import { Button, Form, Input } from "antd";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,12 +8,18 @@ import useInput from "../hooks/useInput";
 
 const LoginForm = () => {
   const dispatch = useDispatch();
-  const { loginLoading } = useSelector((state) => state.user);
+  const { logInLoading, logInError } = useSelector((state) => state.user);
   const [email, onChangeEmail] = useInput("");
   const [password, onChangePassword] = useInput("");
   const onSubmitForm = useCallback(() => {
     dispatch(loginRequestAction({ email, password }));
   }, [email, password]);
+
+  useEffect(() => {
+    if (logInError) {
+      alert(logInError);
+    }
+  }, [logInError])
 
   return (
     <Form onFinish={onSubmitForm} style={{ padding: "10px" }}>
@@ -40,7 +46,7 @@ const LoginForm = () => {
         />
       </div>
       <div style={{ marginTop: "10px" }}>
-        <Button type="primary" htmlType="submit" loading={loginLoading}>
+        <Button type="primary" htmlType="submit" loading={logInLoading}>
           로그인
         </Button>
         <Link href="/signup">
