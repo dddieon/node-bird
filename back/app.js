@@ -12,8 +12,8 @@ const passportConfig = require('./passport');
 
 //middlewares
 app.use(cors({
-  origin: '*',
-  credentials: false,
+  origin: 'http://localhost:3060', // ==> 백엔드와 통신할 프론트 서버
+  credentials: true,
 }));
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
