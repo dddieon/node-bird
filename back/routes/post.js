@@ -27,7 +27,7 @@ router.post("/", isLoggedIn, async (req,res) => {
         model: User, // !! 게시글 작성자 !!
       }]
     })
-    res.status(201).json(post);
+    res.status(201).json(fullPost);
   } catch(error) {
     console.error(error);
     next(error);
