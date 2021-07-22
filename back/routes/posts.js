@@ -10,7 +10,7 @@ router.get('/', async (req, res) => {
       limit: 10,
       order: [
         ['createdAt', 'DESC'],
-        ['Comment', 'createdAt', 'DESC'],
+        [Comment, 'createdAt', 'DESC'],
       ], // 최신 게시글부터
       include: [{
         model: User, // 글 작성자
