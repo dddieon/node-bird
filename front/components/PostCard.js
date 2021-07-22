@@ -15,6 +15,7 @@ import PostCardContent from "./PostCardContent";
 import PostImages from "./PostImages";
 import FollowButton from "./FollowButton";
 import { useDispatch, useSelector } from "react-redux";
+import {LIKE_POST_REQUEST, UNLIKE_POST_REQUEST} from "../reducers/post";
 
 const CardWrapper = styled.div`
   margin-bottom: 20px;
@@ -23,15 +24,25 @@ const CardWrapper = styled.div`
 const PostCard = ({ post }) => {
   const dispatch = useDispatch();
   const [commentFormOpened, setCommentFormOpened] = useState(false);
-  const [liked, setLiked] = useState(false);
-
-  const id = useSelector((state) => {
-    return state.user.me?.id;
-  });
   const { removePostLoading } = useSelector((state) => state.post);
 
-  const onToggleLike = useCallback(() => {
-    setLiked((prev) => !prev);
+  const id = useSelector((state) => state.user.me?.id);
+  const liked = post.Likers?.find(v => v.id === id); //id는 내 아이디
+
+  const onLike = useCallback(() => {
+    //setLike 등 필요없이 redux에서 가져옴
+    dispatch({
+      type: LIKE_POST_REQUEST,
+      data: post.id
+    })
+  }, []);
+
+  const onUnlike = useCallback(() => {
+    //setLike 등 필요없이 redux에서 가져옴
+    dispatch({
+      type: UNLIKE_POST_REQUEST,
+      data: post.id
+    })
   }, []);
 
   const onToggleComment = useCallback(() => {
@@ -55,10 +66,10 @@ const PostCard = ({ post }) => {
             <HeartTwoTone
               twoToneColor="#eb2f96"
               key="heart"
-              onClick={onToggleLike}
+              onClick={onUnlike}
             />
           ) : (
-            <HeartOutlined key="heart" onClick={onToggleLike} />
+            <HeartOutlined key="heart" onClick={onLike} />
           ),
           <MessageOutlined key="message" onClick={onToggleComment} />,
           <Popover

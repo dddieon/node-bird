@@ -10,12 +10,12 @@ module.exports = (sequelize, DataTypes) => {
     collate: 'utf8mb4_general_ci',  //이모티콘까지 가능
   });
   Post.associate = (db) => {
-    db.Post.belongsTo(db.User); // 게시글 작성자 only
-    db.Post.belongsToMany(db.Hashtag, {through: "PostHashtag"});
-    db.Post.hasMany(db.Comment);
-    db.Post.hasMany(db.Image);
-    db.Post.belongsToMany(db.Post, {through: "RetweetTable", as: "Retweet"}); // 리트윗 = 1:多 -> postId는 Retweet으로 변한다
-    db.Post.belongsToMany(db.User, {through: "Like", as: 'Likers'}); // 좋아요는 여러 게시글에 여려사용자 가능
+    db.Post.belongsTo(db.User); // 게시글 작성자 only || 생성: post.addUser, post.setUser
+    db.Post.belongsToMany(db.Hashtag, {through: "PostHashtag"}); // 생성: post.addHashtags
+    db.Post.hasMany(db.Comment); // 생성: post.addComments, post.getComments
+    db.Post.hasMany(db.Image); // 생성: post.addImages
+    db.Post.belongsToMany(db.Post, {through: "RetweetTable", as: "Retweet"}); // 생성: post.addRetweet
+    db.Post.belongsToMany(db.User, {through: "Like", as: 'Likers'}); // 생성: post.addLikers + post.removeLikers
   };
   return Post;
 }
