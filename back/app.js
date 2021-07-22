@@ -4,6 +4,8 @@ const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const passport = require('passport');
 const dotenv = require('dotenv');
+const morgan = require('morgan');
+
 dotenv.config();
 
 const app = express();
@@ -11,6 +13,7 @@ const db = require("./models");
 const passportConfig = require('./passport');
 
 //middlewares
+app.use(morgan('dev'));
 app.use(cors({
   origin: 'http://localhost:3060', // ==> 백엔드와 통신할 프론트 서버
   credentials: true,
@@ -32,9 +35,11 @@ db.sequelize.sync().then(()=>{
 passportConfig(); // 로그인 passport
 
 const postRouter = require('./routes/post');
+const postsRouter = require('./routes/posts');
 const userRouter = require('./routes/user');
 
 app.use("/post", postRouter);
+app.use("/posts", postsRouter);
 app.use("/user", userRouter);
 
 
