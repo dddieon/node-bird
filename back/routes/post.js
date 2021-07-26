@@ -63,7 +63,7 @@ router.post(`/:postId/comment`, isLoggedIn, async (req,res) => {
   }
 })
 
-router.patch(`/:postId/like`, async (req, res, next) => {
+router.patch(`/:postId/like`, isLoggedIn, async (req, res, next) => {
   // 좋아요는 항상 게시글존재유무 체크
   try {
     const post = await Post.findOne({ // await를 쓰지 않으면 500에러가 뜹니다...
@@ -82,7 +82,7 @@ router.patch(`/:postId/like`, async (req, res, next) => {
   }
 })
 
-router.delete(`/:postId/unlike`, async (req, res, next) => {
+router.delete(`/:postId/unlike`, isLoggedIn, async (req, res, next) => {
   try {
     const post = await Post.findOne({ where: { id: req.params.postId }});
     if (!post) {
@@ -96,10 +96,13 @@ router.delete(`/:postId/unlike`, async (req, res, next) => {
   }
 })
 
-router.delete("/:postId", async (req,res) => { //DELETE /post/1
+router.delete("/:postId", isLoggedIn, async (req,res) => { //DELETE /post/1
   try {
     await Post.destroy({ // 시퀄라이저 기능
-      where: {id: req.params.postId}
+      where: {
+        id: req.params.postId,
+        UserId: req.user.id // 본인 게시글만 삭제가능한 필터
+      }
     });
     res.json({ PostId : req.params.postId });
   } catch (error) {
