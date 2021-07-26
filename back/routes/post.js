@@ -96,11 +96,16 @@ router.delete(`/:postId/unlike`, async (req, res, next) => {
   }
 })
 
-router.delete("/", (req,res) => { //DELETE /post
-  res.json([
-    { id: 1, content: 'hello' },
-    { id: 2, content: 'hello2' }
-  ])
+router.delete("/:postId", async (req,res) => { //DELETE /post/1
+  try {
+    await Post.destroy({ // 시퀄라이저 기능
+      where: {id: req.params.postId}
+    });
+    res.json({ PostId : req.params.postId });
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
 })
 
 module.exports = router;
