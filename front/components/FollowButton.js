@@ -23,6 +23,9 @@ const FollowButton = ({ post }) => {
       });
     }
   }, [isFollwing]);
+  if (post.User.id === me.id) {
+    return null;
+  }
   return (
     <Button loading={followLoading || unFollowLoading} onClick={onClickButton}>
       {isFollwing ? "언팔로우" : "팔로우"}

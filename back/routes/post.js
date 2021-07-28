@@ -104,6 +104,7 @@ router.delete("/:postId", isLoggedIn, async (req,res) => { //DELETE /post/1
         UserId: req.user.id // 본인 게시글만 삭제가능한 필터
       }
     });
+    res.status(200).json({PostId: parseInt(req.params.postId, 10)});
     res.json({ PostId : req.params.postId });
   } catch (error) {
     console.error(error);

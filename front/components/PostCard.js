@@ -15,7 +15,7 @@ import PostCardContent from "./PostCardContent";
 import PostImages from "./PostImages";
 import FollowButton from "./FollowButton";
 import { useDispatch, useSelector } from "react-redux";
-import {LIKE_POST_REQUEST, UNLIKE_POST_REQUEST} from "../reducers/post";
+import {LIKE_POST_REQUEST, REMOVE_POST_REQUEST, UNLIKE_POST_REQUEST} from "../reducers/post";
 
 const CardWrapper = styled.div`
   margin-bottom: 20px;
@@ -51,7 +51,7 @@ const PostCard = ({ post }) => {
 
   const onRemovePost = useCallback(() => {
     dispatch({
-      type: "REMOVE_POST_REQUEST",
+      type: REMOVE_POST_REQUEST,
       data: post.id,
     });
   });

@@ -1,6 +1,8 @@
 import { all, fork, takeEvery, put, delay, call  } from "redux-saga/effects";
 import axios from "axios";
 import {
+  CHANGE_NICKNAME_FAILURE,
+  CHANGE_NICKNAME_REQUEST, CHANGE_NICKNAME_SUCCESS,
   LOAD_MY_INFO_FAILURE, LOAD_MY_INFO_REQUEST,
   LOAD_MY_INFO_SUCCESS,
   LOG_IN_FAILURE,
@@ -96,6 +98,25 @@ function* loadMyInfo(action) {
   }
 }
 
+function changeNicknameAPI(data) {
+  return axios.patch("/user/nickname", {nickname: data}); // 쿠키를 전달
+}
+
+function* changeNickname(action) {
+  try {
+    const result = yield call(changeNicknameAPI, action.data);
+    yield put({
+      type: CHANGE_NICKNAME_SUCCESS,
+      data: result.data,
+    });
+  } catch (e) {
+    yield put({
+      type: CHANGE_NICKNAME_FAILURE,
+      data: e.response.data, //실패결과
+    });
+  }
+}
+
 function* watchLogin() {
   //이벤트리스너처럼 동작: 비동기액션생성함수가 "특정이벤트" 감지(두번째 매개변수 logIn을 감지한다)
   yield takeEvery(LOG_IN_REQUEST, logIn);
@@ -113,11 +134,16 @@ function* watchLoadMyInfo() {
   yield takeEvery(LOAD_MY_INFO_REQUEST, loadMyInfo);
 }
 
+function* watchChangeNickname() {
+  yield takeEvery(CHANGE_NICKNAME_REQUEST, changeNickname);
+}
+
 export default function* userSaga() {
   yield all([
     fork(watchLogin),
     fork(watchLogOut),
     fork(watchSignUp),
-    fork(watchLoadMyInfo)
+    fork(watchLoadMyInfo),
+    fork(watchChangeNickname),
   ]);
 }
