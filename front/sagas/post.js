@@ -79,11 +79,10 @@ function unFollowAPI(data) {
 
 function* unFollow(action) {
   try {
-    yield delay(1000);
-    //const result = yield call(unFollowAPI, action.data);
+    const result = yield call(unFollowAPI, action.data);
     yield put({
       type: UNFOLLOW_SUCCESS,
-      data: action.data,
+      data: result.data,
     });
   } catch (e) {
     yield put({
@@ -99,11 +98,10 @@ function followAPI(data) {
 
 function* follow(action) {
   try {
-    yield delay(1000);
-    //const result = yield call(followAPI, action.data);
+    const result = yield call(followAPI, action.data);
     yield put({
       type: FOLLOW_SUCCESS,
-      data: action.data,
+      data: result.data,
     });
   } catch (e) {
     yield put({
