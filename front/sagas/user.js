@@ -2,7 +2,7 @@ import { all, fork, takeEvery, put, delay, call  } from "redux-saga/effects";
 import axios from "axios";
 import {
   CHANGE_NICKNAME_FAILURE,
-  CHANGE_NICKNAME_REQUEST, CHANGE_NICKNAME_SUCCESS,
+  CHANGE_NICKNAME_REQUEST, CHANGE_NICKNAME_SUCCESS, FOLLOW_FAILURE, FOLLOW_REQUEST, FOLLOW_SUCCESS,
   LOAD_MY_INFO_FAILURE, LOAD_MY_INFO_REQUEST,
   LOAD_MY_INFO_SUCCESS,
   LOG_IN_FAILURE,
@@ -13,7 +13,7 @@ import {
   LOG_OUT_SUCCESS,
   SIGN_UP_FAILURE,
   SIGN_UP_REQUEST,
-  SIGN_UP_SUCCESS,
+  SIGN_UP_SUCCESS, UNFOLLOW_FAILURE, UNFOLLOW_REQUEST, UNFOLLOW_SUCCESS,
 } from "../reducers/user";
 import {ADD_COMMENT_REQUEST} from "../reducers/post";
 
@@ -117,6 +117,44 @@ function* changeNickname(action) {
   }
 }
 
+function followAPI(data) {
+  return axios.patch(`/user/${data}/follow`); // 쿠키를 전달
+}
+
+function* follow(action) {
+  try {
+    const result = yield call(followAPI, action.data);
+    yield put({
+      type: FOLLOW_SUCCESS,
+      data: result.data,
+    });
+  } catch (e) {
+    yield put({
+      type: FOLLOW_FAILURE,
+      data: e.response.data, //실패결과
+    });
+  }
+}
+
+function unfollowAPI(data) {
+  return axios.delete(`/user/${data}/unfollow`); // 쿠키를 전달
+}
+
+function* unfollow(action) {
+  try {
+    const result = yield call(unfollowAPI, action.data);
+    yield put({
+      type: UNFOLLOW_SUCCESS,
+      data: result.data,
+    });
+  } catch (e) {
+    yield put({
+      type: UNFOLLOW_FAILURE,
+      data: e.response.data, //실패결과
+    });
+  }
+}
+
 function* watchLogin() {
   //이벤트리스너처럼 동작: 비동기액션생성함수가 "특정이벤트" 감지(두번째 매개변수 logIn을 감지한다)
   yield takeEvery(LOG_IN_REQUEST, logIn);
@@ -138,6 +176,14 @@ function* watchChangeNickname() {
   yield takeEvery(CHANGE_NICKNAME_REQUEST, changeNickname);
 }
 
+function* watchFollow() {
+  yield takeEvery(FOLLOW_REQUEST, follow);
+}
+
+function* watchUnfollow() {
+  yield takeEvery(UNFOLLOW_REQUEST, unfollow);
+}
+
 export default function* userSaga() {
   yield all([
     fork(watchLogin),
@@ -145,5 +191,7 @@ export default function* userSaga() {
     fork(watchSignUp),
     fork(watchLoadMyInfo),
     fork(watchChangeNickname),
+    fork(watchFollow),
+    fork(watchUnfollow)
   ]);
 }

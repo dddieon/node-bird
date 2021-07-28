@@ -79,6 +79,7 @@ router.post("/logout", isLoggedIn, (req, res, next) => {
   res.send("logout ok");
 });
 
+//  ==== 회원가입 ====
 router.post("/", isNotLoggedIn, async (req,res, next) => {
   try {
     const exUser = await User.findOne({
@@ -102,6 +103,7 @@ router.post("/", isNotLoggedIn, async (req,res, next) => {
   }
 });
 
+//  ==== 닉네임 변경 ====
 router.patch("/nickname", isLoggedIn, async (req, res, next) => {
   try {
   await User.update({
@@ -111,6 +113,46 @@ router.patch("/nickname", isLoggedIn, async (req, res, next) => {
   })
     res.status(200).json({
       nickname: req.body.nickname,
+    })
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+//  ==== 팔로우 ====
+router.patch("/:userId/follow", isLoggedIn, async (req, res, next) => {
+  try {
+    // 유저존재 확인
+    const user = await User.findOne({
+      where: {id: req.params.userId}
+    })
+    if (!user) {
+      res.status(403).send("없는 사람을 팔로우하고 있습니다.");
+    }
+    await user.addFollowers(req.user.id);
+    res.status(200).json({
+      UserId: parseInt(req.params.userId, 10)
+    })
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+//  ==== 언팔로우 ====
+router.delete("/:userId/unfollow", isLoggedIn, async (req, res, next) => {
+  try {
+    // 유저존재 확인
+    const user = await User.findOne({
+      where: {id: req.params.userId}
+    })
+    if (!user) {
+      res.status(403).send("없는 사람을 언팔로우하고 있습니다.");
+    }
+    await user.removeFollowers(req.user.id);
+    res.status(200).json({
+      UserId: parseInt(req.params.userId, 10)
     })
   } catch (error) {
     console.error(error);
