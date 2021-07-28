@@ -7,7 +7,7 @@ const db = require('../models');
 
 const router = express.Router();
 
-router.get("/", async (req,res) => { // loadMyInfo
+router.get("/", async (req,res, next) => { // loadMyInfo
   try {
     if (req.user) {
       const fullUserWithoutPassword = await User.findOne({

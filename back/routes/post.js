@@ -1,10 +1,21 @@
 const express = require('express');
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
 
-const router = express.Router();
 const {Post, Image, Comment, User} = require('../models');
 const {isLoggedIn} = require('./middlewares');
 
-router.post("/", isLoggedIn, async (req,res) => {
+const router = express.Router();
+
+try {
+  fs.accessSync('uploads');
+} catch (error) {
+  console.log("uploads 폴더를 새로 생성합니다");
+  fs.mkdirSync("uploads");
+}
+
+router.post("/", isLoggedIn, async (req,res, next) => {
   try {
     const post = await Post.create({
       content: req.body.content,
@@ -36,7 +47,7 @@ router.post("/", isLoggedIn, async (req,res) => {
   }
 })
 
-router.post(`/:postId/comment`, isLoggedIn, async (req,res) => {
+router.post(`/:postId/comment`, isLoggedIn, async (req,res, next) => {
   try {
     const isPost = await Post.findOne({
       where: {id: req.params.postId}
@@ -96,7 +107,7 @@ router.delete(`/:postId/unlike`, isLoggedIn, async (req, res, next) => {
   }
 })
 
-router.delete("/:postId", isLoggedIn, async (req,res) => { //DELETE /post/1
+router.delete("/:postId", isLoggedIn, async (req,res, next) => { //DELETE /post/1
   try {
     await Post.destroy({ // 시퀄라이저 기능
       where: {
@@ -110,6 +121,25 @@ router.delete("/:postId", isLoggedIn, async (req,res) => { //DELETE /post/1
     console.error(error);
     next(error);
   }
+})
+
+// ==== 이미지 업로드용 ====
+const upload = multer({
+  storage: multer.diskStorage({
+    destination(req, file, done) {
+      done(null, "uploads");
+    },
+    filename(req, file, done) { // file_name.png
+      const ext = path.extname(file.originalname); // = .png
+      const basename = path.basename(file.originalname, ext) // = file_name 을 추출
+      done(null, basename  + '_' + new Date().getTime() + ext ); // file_name1847578... .png
+    },
+  }), // 저장위치 설정
+  limits: {fileSize: 20 * 1024 * 1024} // 20mb
+})
+router.post("/images", isLoggedIn, upload.array('image') , async (req,res, next) => { // POST /post/images
+  console.log(req.files);
+  res.json(req.files.map(v => v.filename));
 })
 
 module.exports = router;
