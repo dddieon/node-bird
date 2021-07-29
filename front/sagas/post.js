@@ -53,7 +53,7 @@ function* likePost(action) {
     console.error(e, "error");
     yield put({
       type: LIKE_POST_FAILURE,
-      data: e.response.data,
+      error: e.response.data,
     });
   }
 }
@@ -72,7 +72,7 @@ function* unlikePost(action) {
   } catch (e) {
     yield put({
       type: UNLIKE_POST_FAILURE,
-      data: e.response.data,
+      error: e.response.data,
     });
   }
 }
@@ -92,7 +92,7 @@ function* unFollow(action) {
   } catch (e) {
     yield put({
       type: UNFOLLOW_FAILURE,
-      data: e.response.data, //실패결과
+      error: e.response.data, //실패결과
     });
   }
 }
@@ -111,7 +111,7 @@ function* follow(action) {
   } catch (e) {
     yield put({
       type: FOLLOW_FAILURE,
-      data: e.response.data, //실패결과
+      error: e.response.data, //실패결과
     });
   }
 }
@@ -130,7 +130,7 @@ function* loadPost(action) {
   } catch (e) {
     yield put({
       type: LOAD_POST_FAILURE,
-      data: e.response.data, //실패결과
+      error: e.response.data, //실패결과
     });
   }
 }
@@ -153,7 +153,7 @@ function* addPost(action) {
   } catch (e) {
     yield put({
       type: ADD_POST_FAILURE,
-      data: e.response.data, //실패결과
+      error: e.response.data, //실패결과
     });
   }
 }
@@ -174,7 +174,7 @@ function* addComment(action) {
     console.error(e);
     yield put({
       type: ADD_COMMENT_FAILURE,
-      data: e.response.data, //실패결과
+      error: e.response.data, //실패결과
     });
   }
 }
@@ -197,7 +197,7 @@ function* removePost(action) {
   } catch (e) {
     yield put({
       type: REMOVE_POST_FAILURE,
-      data: e.response.data, //실패결과
+      error: e.response.data, //실패결과
     });
   }
 }
@@ -217,7 +217,7 @@ function* uploadImages(action) {
   } catch (e) {
     yield put({
       type: UPLOAD_IMAGES_FAILURE,
-      data: e.response.data, //실패결과
+      error: e.response.data, //실패결과
     });
   }
 }
@@ -236,7 +236,7 @@ function* retweet(action) {
   } catch (e) {
     yield put({
       type: RETWEET_FAILURE,
-      data: e.response.data, //실패결과
+      error: e.response.data, //실패결과
     });
   }
 }
