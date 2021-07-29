@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useRef, useEffect } from "react";
 import { Form, Input, Button } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import {addPost, UPLOAD_IMAGES_REQUEST} from "../reducers/post";
+import {ADD_POST_REQUEST, addPost, REMOVE_IMAGE, UPLOAD_IMAGES_REQUEST} from "../reducers/post";
 
 const PostForm = () => {
   const { imagePaths, addPostDone } = useSelector((state) => state.post);
@@ -17,11 +17,9 @@ const PostForm = () => {
   const onChangeText = useCallback((e) => {
     setText(e.target.value);
   }, []);
-  const onSubmit = useCallback(() => {
-    dispatch(addPost(text));
-  }, [text]);
 
   const imageInput = useRef();
+
   const onClickImageUpload = useCallback(() => {
     imageInput.current.click();
   }, [imageInput.current]);
@@ -35,6 +33,28 @@ const PostForm = () => {
     dispatch({
       type: UPLOAD_IMAGES_REQUEST,
       data: imageFormData
+    })
+  }, [])
+
+  const onSubmit = useCallback(() => {
+    if (!text || !text.trim()) {
+      return alert("게시글을 작성하세요.");
+    }
+    const formData = new FormData();
+    imagePaths.forEach((path) => {
+      formData.append("image", path);
+    })
+    formData.append("content", text);
+    return dispatch({
+      type: ADD_POST_REQUEST,
+      data: formData
+    });
+  }, [text, imagePaths]);
+
+  const onRemoveImage = useCallback((index) => () => {
+    dispatch({
+      type: REMOVE_IMAGE,
+      data: index
     })
   }, [])
 
@@ -59,11 +79,11 @@ const PostForm = () => {
         </Button>
       </div>
       <div>
-        {imagePaths.map((v) => (
+        {imagePaths.map((v, i) => (
           <div key={v} style={{ display: "inline-block" }}>
-            <img src={v} style={{ width: "200px" }} alt={v} />
+            <img src={`http://localhost:3065/${v}`} style={{ width: "200px" }} alt={v} />
             <div>
-              <button>제거</button>
+              <button onClick={onRemoveImage(i)}>제거</button>
             </div>
           </div>
         ))}

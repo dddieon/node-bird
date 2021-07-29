@@ -1,7 +1,7 @@
 module.exports = (sequelize, DataTypes) => {
   const Image = sequelize.define("Image",{
     // id는 자동으로 저장
-    name: {
+    src: {
       type: DataTypes.STRING(200),
       allowNull: false,
     },

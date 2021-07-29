@@ -15,12 +15,46 @@ try {
   fs.mkdirSync("uploads");
 }
 
-router.post("/", isLoggedIn, async (req,res, next) => {
+
+// ==== 이미지 업로드용 ====
+const upload = multer({
+  storage: multer.diskStorage({
+    destination(req, file, done) {
+      done(null, "uploads");
+    },
+    filename(req, file, done) { // file_name.png
+      const ext = path.extname(file.originalname); // = .png
+      const basename = path.basename(file.originalname, ext) // = file_name 을 추출
+      done(null, basename  + '_' + new Date().getTime() + ext ); // file_name1847578... .png
+    },
+  }), // 저장위치 설정
+  limits: {fileSize: 20 * 1024 * 1024} // 20mb
+})
+
+router.post("/", isLoggedIn, upload.none() , async (req,res, next) => {
   try {
     const post = await Post.create({
       content: req.body.content,
       UserId: req.user.id, // ★ passport.js - 디시리얼라이즈 기능
     })
+    if (req.body.image) {
+      if (Array.isArray(req.body.image)) { // 이미지를 여러 개 올리면 image: [제로초.png, 부기초.png]
+        const images = await Promise.all(req.body.image.map((image) => Image.create({ src: image })));
+        await post.addImages(images);
+      } else { // 이미지를 하나만 올리면 image: 제로초.png
+        const image = await Image.create({ src: req.body.image });
+        await post.addImages(image);
+      }
+    }
+    // if (req.body.image) {
+    //   if(Array.isArray(req.body.image)) { //이미지가 여러개면 배열, 아니면 스트링
+    //     const images = await Promise.all(req.body.image.map((image) => Image.create({src: image})));
+    //     await post.addImages(images);
+    //   } else {
+    //     const image = await Image.create({src: req.body.image});
+    //     await post.addImages(image);
+    //   }
+    // }
     const fullPost = await Post.findOne({ // !! 테이블 조인 !!
       where: { id: post.id },
       include: [{
@@ -123,20 +157,6 @@ router.delete("/:postId", isLoggedIn, async (req,res, next) => { //DELETE /post/
   }
 })
 
-// ==== 이미지 업로드용 ====
-const upload = multer({
-  storage: multer.diskStorage({
-    destination(req, file, done) {
-      done(null, "uploads");
-    },
-    filename(req, file, done) { // file_name.png
-      const ext = path.extname(file.originalname); // = .png
-      const basename = path.basename(file.originalname, ext) // = file_name 을 추출
-      done(null, basename  + '_' + new Date().getTime() + ext ); // file_name1847578... .png
-    },
-  }), // 저장위치 설정
-  limits: {fileSize: 20 * 1024 * 1024} // 20mb
-})
 router.post("/images", isLoggedIn, upload.array('image') , async (req,res, next) => { // POST /post/images
   console.log(req.files);
   res.json(req.files.map(v => v.filename));

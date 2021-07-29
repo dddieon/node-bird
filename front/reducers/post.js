@@ -82,6 +82,8 @@ export const UPLOAD_IMAGES_REQUEST = "UPLOAD_IMAGES_REQUEST";
 export const UPLOAD_IMAGES_SUCCESS = "UPLOAD_IMAGES_SUCCESS";
 export const UPLOAD_IMAGES_FAILURE = "UPLOAD_IMAGES_FAILURE";
 
+export const REMOVE_IMAGE = "REMOVE_IMAGE";
+
 export const addPost = (data) => ({
   type: ADD_POST_REQUEST,
   data,
@@ -119,6 +121,9 @@ const reducer = (state = initialState, action) => {
         draft.uploadImagesLoading = true;
         draft.uploadImagesDone = false;
         draft.uploadImagesError = null;
+        break;
+      case REMOVE_IMAGE:
+        draft.imagePaths = draft.imagePaths.filter((v, i) => i !== action.data); // 프론트에서만
         break;
       case UPLOAD_IMAGES_SUCCESS: {
         draft.imagePaths = action.data;
@@ -192,6 +197,7 @@ const reducer = (state = initialState, action) => {
         draft.addPostLoading = false;
         draft.addPostDone = true;
         draft.mainPosts.unshift(action.data);
+        draft.imagePaths = []; // 미리보기 삭제
         break;
       case ADD_POST_FAILURE:
         draft.addPostLoading = false;
