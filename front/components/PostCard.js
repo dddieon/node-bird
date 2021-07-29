@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, {useState, useCallback, useEffect} from "react";
 import { Card, Button, Avatar, Popover, List, Comment } from "antd";
 import {
   RetweetOutlined,
@@ -15,7 +15,7 @@ import PostCardContent from "./PostCardContent";
 import PostImages from "./PostImages";
 import FollowButton from "./FollowButton";
 import { useDispatch, useSelector } from "react-redux";
-import {LIKE_POST_REQUEST, REMOVE_POST_REQUEST, UNLIKE_POST_REQUEST} from "../reducers/post";
+import {LIKE_POST_REQUEST, REMOVE_POST_REQUEST, RETWEET_REQUEST, UNLIKE_POST_REQUEST} from "../reducers/post";
 
 const CardWrapper = styled.div`
   margin-bottom: 20px;
@@ -31,15 +31,25 @@ const PostCard = ({ post }) => {
 
   const onLike = useCallback(() => {
     //setLike 등 필요없이 redux에서 가져옴
-    dispatch({
+    if (!id) {
+      return alert("로그인이 필요합니다.");
+    }
+    return dispatch({
       type: LIKE_POST_REQUEST,
       data: post.id
     })
   }, []);
 
+  useEffect(() => {
+
+  }, [])
+
   const onUnlike = useCallback(() => {
     //setLike 등 필요없이 redux에서 가져옴
-    dispatch({
+    if (!id) {
+      return alert("로그인이 필요합니다.");
+    }
+    return dispatch({
       type: UNLIKE_POST_REQUEST,
       data: post.id
     })
@@ -50,18 +60,31 @@ const PostCard = ({ post }) => {
   }, []);
 
   const onRemovePost = useCallback(() => {
-    dispatch({
+    if (!id) {
+      return alert("로그인이 필요합니다.");
+    }
+    return dispatch({
       type: REMOVE_POST_REQUEST,
       data: post.id,
     });
-  });
+  }, []);
+
+  const onRetweet = useCallback(() => {
+    if (!id) {
+      return alert("로그인이 필요합니다.");
+    }
+    return dispatch({
+      type: RETWEET_REQUEST,
+      data: post.id,
+    });
+  }, []);
 
   return (
     <CardWrapper key={post.id}>
       <Card
         cover={post.Images[0] && <PostImages images={post.Images} />}
         actions={[
-          <RetweetOutlined key="retweet" />,
+          <RetweetOutlined key="retweet" onClick={onRetweet}/>,
           liked ? (
             <HeartTwoTone
               twoToneColor="#eb2f96"

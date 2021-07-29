@@ -19,7 +19,12 @@ import {
   LIKE_POST_FAILURE,
   UNLIKE_POST_SUCCESS,
   UNLIKE_POST_FAILURE,
-  UNLIKE_POST_REQUEST, UPLOAD_IMAGES_REQUEST, UPLOAD_IMAGES_SUCCESS, UPLOAD_IMAGES_FAILURE,
+  UNLIKE_POST_REQUEST,
+  UPLOAD_IMAGES_REQUEST,
+  UPLOAD_IMAGES_SUCCESS,
+  UPLOAD_IMAGES_FAILURE,
+  RETWEET_SUCCESS,
+  RETWEET_FAILURE, RETWEET_REQUEST,
 } from "../reducers/post";
 import {
   ADD_POST_TO_ME,
@@ -217,6 +222,25 @@ function* uploadImages(action) {
   }
 }
 
+function retweetAPI(data) {
+  return axios.post(`/post/${data}|/retweet`);
+}
+
+function* retweet(action) {
+  try {
+    const result = yield call(retweetAPI, action.data);
+    yield put({
+      type: RETWEET_SUCCESS,
+      data: result.data,
+    });
+  } catch (e) {
+    yield put({
+      type: RETWEET_FAILURE,
+      data: e.response.data, //실패결과
+    });
+  }
+}
+
 function* watchLikePost() {
   yield takeEvery(LIKE_POST_REQUEST, likePost);
 }
@@ -253,6 +277,10 @@ function* watchUploadImages() {
   yield takeEvery(UPLOAD_IMAGES_REQUEST, uploadImages);
 }
 
+function* watchRetweet() {
+  yield takeEvery(RETWEET_REQUEST, retweet);
+}
+
 export default function* postSaga() {
   yield all([
     fork(watchLikePost),
@@ -264,5 +292,6 @@ export default function* postSaga() {
     fork(watchRemovePost),
     fork(watchLoadPost),
     fork(watchUploadImages),
+    fork(watchRetweet),
   ]);
 }
