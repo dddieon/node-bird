@@ -202,21 +202,20 @@ router.delete(`/:postId/unlike`, isLoggedIn, async (req, res, next) => {
   }
 })
 
-router.delete("/:postId", isLoggedIn, async (req,res, next) => { //DELETE /post/1
+router.delete('/:postId', isLoggedIn, async (req, res, next) => { // DELETE /post/10
   try {
-    await Post.destroy({ // 시퀄라이저 기능
+    await Post.destroy({
       where: {
         id: req.params.postId,
-        UserId: req.user.id // 본인 게시글만 삭제가능한 필터
-      }
+        UserId: req.user.id,
+      },
     });
-    res.status(200).json({PostId: parseInt(req.params.postId, 10)});
-    res.json({ PostId : req.params.postId });
+    res.status(200).json({ PostId: parseInt(req.params.postId, 10) });
   } catch (error) {
     console.error(error);
     next(error);
   }
-})
+});
 
 router.post("/images", isLoggedIn, upload.array('image') , async (req,res, next) => { // POST /post/images
   console.log(req.files);

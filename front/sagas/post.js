@@ -194,10 +194,11 @@ function* removePost(action) {
       type: REMOVE_POST_OF_ME,
       data: action.data,
     });
-  } catch (e) {
+  } catch (err) {
+    console.error(err);
     yield put({
       type: REMOVE_POST_FAILURE,
-      data: e.response.data, //실패결과
+      error: err.response.data,
     });
   }
 }
