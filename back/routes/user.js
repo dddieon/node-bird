@@ -214,4 +214,40 @@ router.delete("/follower/:userId", isLoggedIn, async (req, res, next) => {
   }
 });
 
+// ==== 타인의 유저 정보 =====
+router.get("/:userId", isLoggedIn, async (req, res, next) => {
+  try {
+    // 유저존재 확인
+    const fullUserWithoutPassword = await User.findOne({
+      where: {id: req.params.userId},
+      attributes: {
+        exclude: ['password'] // --- 패스워드 컬럼 제외
+      },
+      include: [{
+        model: Post, // --- associate 되었던 테이블에서 id만 조인: 숫자만 세기
+        attributes: ['id'],
+      }, {
+        model: User,
+        attributes: ['id'],
+        as: 'Followings' // --- as는 모델정의와 동일하게
+      }, {
+        model: User,
+        attributes: ['id'],
+        as: 'Followers'
+      }]
+    })
+    if (!fullUserWithoutPassword) {
+      return res.status(403).send("유저가 존재하지 않음"); // 해당 followings <-> 유저의 followers (대칭)
+    }
+    const data = fullUserWithoutPassword.toJSON();
+    data.Posts = data.Posts.length;
+    data.Followers = data.Followers.length;
+    data.Followings = data.Followings.length; // 개인정보이기에 개수만 보냄
+    return res.status(200).json(data);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
 module.exports = router;
