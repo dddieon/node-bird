@@ -13,6 +13,15 @@ router.get('/', async (req, res) => {
         [Comment, 'createdAt', 'DESC'],
       ], // 최신 게시글부터
       include: [{
+        model: Post,
+        as: 'Retweet',
+        include: [{
+          model: User,
+          attributes: ['id', 'nickname'],
+        }, {
+          model: Image,
+        }]
+      },{
         model: User, // 글 작성자
         attributes: ['id', 'nickname'],
       }, {

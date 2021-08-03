@@ -109,7 +109,7 @@ function* loadMyInfo(action) {
   } catch (e) {
     yield put({
       type: LOAD_MY_INFO_FAILURE,
-      data: e.response.data, //실패결과
+      error: e.response.data, //실패결과
     });
   }
 }
@@ -128,7 +128,7 @@ function* changeNickname(action) {
   } catch (e) {
     yield put({
       type: CHANGE_NICKNAME_FAILURE,
-      data: e.response.data, //실패결과
+      error: e.response.data, //실패결과
     });
   }
 }
@@ -147,7 +147,7 @@ function* follow(action) {
   } catch (e) {
     yield put({
       type: FOLLOW_FAILURE,
-      data: e.response.data, //실패결과
+      error: e.response.data, //실패결과
     });
   }
 }
@@ -166,7 +166,7 @@ function* unfollow(action) {
   } catch (e) {
     yield put({
       type: UNFOLLOW_FAILURE,
-      data: e.response.data, //실패결과
+      error: e.response.data, //실패결과
     });
   }
 }
@@ -185,7 +185,7 @@ function* loadFollowers() {
   } catch (e) {
     yield put({
       type: LOAD_FOLLOWERS_FAILURE,
-      data: e.response.data, //실패결과
+      error: e.response.data, //실패결과
     });
   }
 }
@@ -204,7 +204,7 @@ function* loadFollowings() {
   } catch (e) {
     yield put({
       type: LOAD_FOLLOWINGS_FAILURE,
-      data: e.response.data, //실패결과
+      error: e.response.data, //실패결과
     });
   }
 }
@@ -223,7 +223,7 @@ function* removeFollower(action) {
   } catch (e) {
     yield put({
       type: REMOVE_FOLLOWER_FAILURE,
-      data: e.response.data, //실패결과
+      error: e.response.data, //실패결과
     });
   }
 }
