@@ -12,7 +12,7 @@ import axios from 'axios';
 const Home = () => {
   const dispatch = useDispatch();
   const { me } = useSelector((state) => state.user);
-  const { mainPosts, hasMorePost, loadPostLoading, retweetError } = useSelector(
+  const { mainPosts, hasMorePost, loadPostsLoading, retweetError } = useSelector(
     (state) => state.post
   );
 
@@ -37,7 +37,7 @@ const Home = () => {
         window.scrollY + document.documentElement.clientHeight >
         document.documentElement.scrollHeight - 300
       ) {
-        if (hasMorePost && !loadPostLoading) {
+        if (hasMorePost && !loadPostsLoading) {
           dispatch({
             type: LOAD_POSTS_REQUEST,
           });
@@ -48,7 +48,7 @@ const Home = () => {
     return () => {
       window.removeEventListener("scroll", onScroll);
     };
-  }, [hasMorePost, loadPostLoading, mainPosts]);
+  }, [hasMorePost, loadPostsLoading, mainPosts]);
   return (
     <AppLayout>
       {me && <PostForm />}
