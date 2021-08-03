@@ -11,9 +11,9 @@ import {
   REMOVE_POST_REQUEST,
   REMOVE_POST_SUCCESS,
   REMOVE_POST_FAILURE,
-  LOAD_POST_REQUEST,
-  LOAD_POST_SUCCESS,
-  LOAD_POST_FAILURE,
+  LOAD_POSTS_REQUEST,
+  LOAD_POSTS_SUCCESS,
+  LOAD_POSTS_FAILURE,
   LIKE_POST_REQUEST,
   LIKE_POST_SUCCESS,
   LIKE_POST_FAILURE,
@@ -124,12 +124,12 @@ function* loadPost(action) {
   try {
     const result = yield call(loadPostAPI, action.data);
     yield put({
-      type: LOAD_POST_SUCCESS,
+      type: LOAD_POSTS_SUCCESS,
       data: result.data,
     });
   } catch (e) {
     yield put({
-      type: LOAD_POST_FAILURE,
+      type: LOAD_POSTS_FAILURE,
       error: e.response.data, //실패결과
     });
   }
@@ -259,7 +259,7 @@ function* watchFollow() {
 }
 
 function* watchLoadPost() {
-  yield takeEvery(LOAD_POST_REQUEST, loadPost);
+  yield takeEvery(LOAD_POSTS_REQUEST, loadPost);
 }
 
 function* watchAddPost() {

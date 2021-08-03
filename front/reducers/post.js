@@ -63,11 +63,11 @@ export const LIKE_POST_FAILURE = "LIKE_POST_FAILURE";
 
 export const UNLIKE_POST_REQUEST = "UNLIKE_POST_REQUEST";
 export const UNLIKE_POST_SUCCESS = "UNLIKE_POST_SUCCESS";
-export const UNLIKE_POST_FAILURE = "LOAD_POST_FAILURE";
+export const UNLIKE_POST_FAILURE = "UNLIKE_POST_FAILURE";
 
-export const LOAD_POST_REQUEST = "LOAD_POST_REQUEST";
-export const LOAD_POST_SUCCESS = "LOAD_POST_SUCCESS";
-export const LOAD_POST_FAILURE = "LOAD_POST_FAILURE";
+export const LOAD_POSTS_REQUEST = "LOAD_POSTS_REQUEST";
+export const LOAD_POSTS_SUCCESS = "LOAD_POSTS_SUCCESS";
+export const LOAD_POSTS_FAILURE = "LOAD_POSTS_FAILURE";
 
 export const ADD_POST_REQUEST = "ADD_POST_REQUEST";
 export const ADD_POST_SUCCESS = "ADD_POST_SUCCESS";
@@ -195,18 +195,18 @@ const reducer = (state = initialState, action) => {
         draft.likePostDone = false;
         draft.likePostError = action.error;
         break;
-      case LOAD_POST_REQUEST:
+      case LOAD_POSTS_REQUEST:
         draft.loadPostLoading = true;
         draft.loadPostDone = false;
         draft.loadPostError = null;
         break;
-      case LOAD_POST_SUCCESS:
+      case LOAD_POSTS_SUCCESS:
         draft.loadPostLoading = false;
         draft.loadPostDone = true;
         draft.mainPosts = action.data.concat(draft.mainPosts);
         draft.hasMorePost = draft.mainPosts.length < 50; // 무한스크롤 중단
         break;
-      case LOAD_POST_FAILURE:
+      case LOAD_POSTS_FAILURE:
         draft.loadPostLoading = false;
         draft.loadPostDone = false;
         draft.loadPostError = action.error;

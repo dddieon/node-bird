@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import PostForm from "../components/PostForm";
 import PostCard from "../components/PostCard";
 import AppLayout from "../components/AppLayout";
-import { LOAD_POST_REQUEST } from "../reducers/post";
+import { LOAD_POSTS_REQUEST } from "../reducers/post";
 import { LOAD_MY_INFO_REQUEST } from "../reducers/user";
 import wrapper from "../store/configureStore";
 import { END } from 'redux-saga';
@@ -27,7 +27,7 @@ const Home = () => {
       type: LOAD_MY_INFO_REQUEST,
     });
     dispatch({
-      type: LOAD_POST_REQUEST,
+      type: LOAD_POSTS_REQUEST,
     });
   }, []);
 
@@ -39,7 +39,7 @@ const Home = () => {
       ) {
         if (hasMorePost && !loadPostLoading) {
           dispatch({
-            type: LOAD_POST_REQUEST,
+            type: LOAD_POSTS_REQUEST,
           });
         }
       }
@@ -70,7 +70,7 @@ export const getServerSideProps = wrapper.getServerSideProps((store) => async ({
     type: LOAD_MY_INFO_REQUEST,
   });
   store.dispatch({
-    type: LOAD_POST_REQUEST,
+    type: LOAD_POSTS_REQUEST,
   });
   store.dispatch(END);
   await store.sagaTask.toPromise(); // saga 요청이 끝날 때 까지 기다림
