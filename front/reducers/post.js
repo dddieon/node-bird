@@ -4,6 +4,7 @@ import faker from "faker";
 
 export const initialState = {
   mainPosts: [],
+  singlePost: null,
   imagePaths: [],
   hasMorePost: false, // false면 무한스크롤 로드 x
   likePostLoading: false,
@@ -214,6 +215,21 @@ const reducer = (state = initialState, action) => {
         draft.hasMorePost = draft.mainPosts.length < 50; // 무한스크롤 중단
         break;
       case LOAD_POSTS_FAILURE:
+        draft.loadPostsLoading = false;
+        draft.loadPostsDone = false;
+        draft.loadPostsError = action.error;
+        break;
+      case LOAD_POST_REQUEST:
+        draft.loadPostLoading = true;
+        draft.loadPostDone = false;
+        draft.loadPostError = null;
+        break;
+      case LOAD_POST_SUCCESS:
+        draft.loadPostLoading = false;
+        draft.loadPostDone = true;
+        draft.singlePost = action.data;
+        break;
+      case LOAD_POST_FAILURE:
         draft.loadPostsLoading = false;
         draft.loadPostsDone = false;
         draft.loadPostsError = action.error;

@@ -119,13 +119,13 @@ function* follow(action) {
   }
 }
 
-function loadPostAPI(data) {
+function loadPostsAPI(data) {
   return axios.get("/posts", data);
 }
 
-function* loadPost(action) {
+function* loadPosts(action) {
   try {
-    const result = yield call(loadPostAPI, action.data);
+    const result = yield call(loadPostsAPI, action.data);
     yield put({
       type: LOAD_POSTS_SUCCESS,
       data: result.data,
@@ -134,6 +134,26 @@ function* loadPost(action) {
     yield put({
       type: LOAD_POSTS_FAILURE,
       error: e.response.data, //실패결과
+    });
+  }
+}
+
+function loadPostAPI(data) {
+  return axios.get(`/post/${data}`);
+}
+
+function* loadPost(action) {
+  try {
+    const result = yield call(loadPostAPI, action.data);
+    yield put({
+      type: LOAD_POST_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: LOAD_POST_FAILURE,
+      data: err.response.data,
     });
   }
 }
@@ -261,8 +281,12 @@ function* watchFollow() {
   yield takeEvery(FOLLOW_REQUEST, follow);
 }
 
+function* watchLoadPosts() {
+  yield takeEvery(LOAD_POSTS_REQUEST, loadPosts);
+}
+
 function* watchLoadPost() {
-  yield takeEvery(LOAD_POSTS_REQUEST, loadPost);
+  yield takeEvery(LOAD_POST_REQUEST, loadPost);
 }
 
 function* watchAddPost() {
@@ -294,6 +318,7 @@ export default function* postSaga() {
     fork(watchAddPost),
     fork(watchAddComment),
     fork(watchRemovePost),
+    fork(watchLoadPosts),
     fork(watchLoadPost),
     fork(watchUploadImages),
     fork(watchRetweet),
