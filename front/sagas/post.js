@@ -185,6 +185,8 @@ function* loadUserPosts(action) {
 
 function loadHashtagPostsAPI(data, lastId) {
   return axios.get(`/hashtag/${encodeURIComponent(data)}?lastId=${lastId || 0}`);
+  // 한글을 넣으면 $#$#%##$ 이런식으로 넣어준다.
+  // 백엔드에서 decodeURIComponent(req.params.hashtag) 로 디코드한다.
 }
 
 function* loadHashtagPosts(action) {
