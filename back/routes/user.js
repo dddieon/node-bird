@@ -121,6 +121,65 @@ router.patch("/nickname", isLoggedIn, async (req, res, next) => {
   }
 });
 
+
+//  ==== 내팔로워 조회 ====
+router.get("/followers", isLoggedIn, async (req, res, next) => {
+  try {
+    // 유저존재 확인
+    const user = await User.findOne({
+      where: {id: req.user.id}
+    })
+    if (!user) {
+      res.status(403).send("유저정보가 없음");
+    }
+    const followers = await user.getFollowers({
+      limit: 3,
+    });
+    res.status(200).json(followers);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+//  ==== 팔로잉하고 있는 사람 조회 ====
+router.get("/followings", isLoggedIn, async (req, res, next) => {
+  try {
+    // 유저존재 확인
+    const user = await User.findOne({
+      where: {id: req.user.id}
+    })
+    if (!user) {
+      res.status(403).send("유저정보가 없음");
+    }
+    const followings = await user.getFollowings({
+      limit: 3,
+    });
+    res.status(200).json(followings);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+//  ==== 내 팔로워 차단 ====
+router.delete("/follower/:userId", isLoggedIn, async (req, res, next) => {
+  try {
+    // 유저존재 확인
+    const user = await User.findOne({
+      where: {id: req.params.userId}
+    })
+    if (!user) {
+      res.status(403).send("차단할 유저가 존재하지 않음"); // 해당 followings <-> 유저의 followers (대칭)
+    }
+    await user.removeFollowings(req.user.id);
+    res.status(200).json({UserId: parseInt(req.params.userId, 10)});
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
 //  ==== 팔로우 ====
 router.patch("/:userId/follow", isLoggedIn, async (req, res, next) => {
   try {
@@ -155,60 +214,6 @@ router.delete("/:userId/unfollow", isLoggedIn, async (req, res, next) => {
     res.status(200).json({
       UserId: parseInt(req.params.userId, 10)
     })
-  } catch (error) {
-    console.error(error);
-    next(error);
-  }
-});
-
-//  ==== 내팔로워 조회 ====
-router.get("/followers", isLoggedIn, async (req, res, next) => {
-  try {
-    // 유저존재 확인
-    const user = await User.findOne({
-      where: {id: req.user.id}
-    })
-    if (!user) {
-      res.status(403).send("유저정보가 없음");
-    }
-    const followers = await user.getFollowers();
-    res.status(200).json(followers);
-  } catch (error) {
-    console.error(error);
-    next(error);
-  }
-});
-
-//  ==== 팔로잉하고 있는 사람 조회 ====
-router.get("/followings", isLoggedIn, async (req, res, next) => {
-  try {
-    // 유저존재 확인
-    const user = await User.findOne({
-      where: {id: req.user.id}
-    })
-    if (!user) {
-      res.status(403).send("유저정보가 없음");
-    }
-    const followings = await user.getFollowings();
-    res.status(200).json(followings);
-  } catch (error) {
-    console.error(error);
-    next(error);
-  }
-});
-
-//  ==== 내 팔로워 차단 ====
-router.delete("/follower/:userId", isLoggedIn, async (req, res, next) => {
-  try {
-    // 유저존재 확인
-    const user = await User.findOne({
-      where: {id: req.params.userId}
-    })
-    if (!user) {
-      res.status(403).send("차단할 유저가 존재하지 않음"); // 해당 followings <-> 유저의 followers (대칭)
-    }
-    await user.removeFollowings(req.user.id);
-    res.status(200).json({UserId: parseInt(req.params.userId, 10)});
   } catch (error) {
     console.error(error);
     next(error);
@@ -251,7 +256,7 @@ router.get("/:userId", isLoggedIn, async (req, res, next) => {
   }
 });
 
-// ===== 타인의 게시글 =====
+// ===== 타인의 게시글 ===== // :id이기 때문에 맨 뒤에 다른 라우터와 착각 -> 404 에러 -> 맨마지막에 !!!
 
 router.get('/:id/posts', async (req, res, next) => { // GET /user/1/posts
   try {
