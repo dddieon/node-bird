@@ -1,5 +1,5 @@
 import { HYDRATE } from "next-redux-wrapper";
-import produce from "immer";
+import produce from "../util/produce";
 
 export const initialState = {
   loadMyInfoLoading: false,
