@@ -1,11 +1,13 @@
-import React from "react";
+import React, {useCallback} from "react";
 import Link from "next/link";
+import Router from "next/router";
 import PropTypes from "prop-types";
 import { Col, Input, Menu, Row } from "antd";
 import { useSelector } from "react-redux";
 
 import LoginForm from "./LoginForm";
 import UserProfile from "./UserProfile";
+import useInput from "../hooks/useInput";
 
 const dummy = {
   nickname: "제로초",
@@ -17,6 +19,11 @@ const dummy = {
 
 const AppLayout = ({ children }) => {
   const { me } = useSelector((state) => state.user);
+  const [searchInput, onChangeSearchInput] = useInput();
+
+  const onSearch = useCallback(() => {
+    Router.push(`/hashtag/${searchInput}`);
+  }, [searchInput])
 
   return (
     <div>
@@ -32,7 +39,12 @@ const AppLayout = ({ children }) => {
           </Link>
         </Menu.Item>
         <Menu.Item key="mail">
-          <Input.Search enterButton style={{ verticalAlign: "middle" }} />
+          <Input.Search
+            enterButton style={{ verticalAlign: "middle" }}
+            value={searchInput}
+            onChange={onChangeSearchInput}
+            onSearch={onSearch}
+          />
         </Menu.Item>
       </Menu>
       <Row gutter={8}>

@@ -122,14 +122,14 @@ const PostCard = ({ post }) => {
           post.RetweetId && post.Retweet ?
             <Card cover={post.Retweet.Images[0] && <PostImages images={post.Retweet.Images}/>}>
               <Card.Meta
-                avatar={<Avatar>{post.Retweet.User.nickname[0]}</Avatar>}
+                avatar={<Link href={`/user/${post.Retweet.User.id}`}><Avatar>{post.Retweet.User.nickname[0]}</Avatar></Link>}
                 title={post.Retweet.User.nickname}
                 description={<PostCardContent postData={post.Retweet.content} />}
               />
             </Card>
             :
             <Card.Meta
-              avatar={<Avatar>{post.User.nickname[0]}</Avatar>}
+              avatar={<Link href={`/user/${post.User.id}`}><Avatar>{post.User.nickname[0]}</Avatar></Link>}
               title={post.User.nickname}
               description={<PostCardContent postData={post.content} />}
             />
