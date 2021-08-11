@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import useSWR from "swr";
 
 import NicknameEditForm from "../components/NicknameEditForm";
@@ -16,10 +16,12 @@ const fetcher = (url) => axios.get(url, {withCredentials: true}).then(result => 
 
 const Profile = () => {
   const { me } = useSelector((state) => state.user);
+  const [followersLimit, setFollowersLimit] = useState(3);
+  const [followingsLimit, setFollowingsLimit] = useState(3);
   const dispatch = useDispatch();
 
-  const {data: followersData, error: followerError} = useSWR("http://localhost:3065/user/followers", fetcher);
-  const {data: followingsData, error: followingsError} = useSWR("http://localhost:3065/user/followings", fetcher);
+  const {data: followersData, error: followersError} = useSWR(`http://localhost:3065/user/followers?limit=${followersLimit}`, fetcher);
+  const {data: followingsData, error: followingsError} = useSWR(`http://localhost:3065/user/followings?limit=${followingsLimit}`, fetcher);
 
   useEffect(() => {
     dispatch({
@@ -36,20 +38,28 @@ const Profile = () => {
     }
   }, [me && me.id]);
 
+  const loadMoreFollowers = useCallback(() => {
+    setFollowersLimit(prev => prev + 3)
+  }, [])
+
+  const loadMoreFollowings = useCallback(() => {
+    setFollowingsLimit(prev => prev + 3)
+  }, [])
+
   if (!me) {
     return '내 정보 로딩중...';
   }
 
-  if (followerError || followingsError) {
-    console.error(followerError || followingsError);
+  if (followersError || followingsError) {
+    console.error(followersError || followingsError);
     return <div>팔로잉/팔로워 로딩중 에러가 발생합니다.</div>;
   }
 
   return (
     <AppLayout>
       <NicknameEditForm />
-      <FollowList header="팔로잉 목록" data={followingsData} />
-      <FollowList header="팔로워 목록" data={followersData} />
+      <FollowList header="팔로잉 목록" data={followingsData} onClickMore={loadMoreFollowings} loading={!followingsData && !followingsError}/>
+      <FollowList header="팔로워 목록" data={followersData} onClickMore={loadMoreFollowers} loading={!followersData && !followersError} />
     </AppLayout>
   );
 };
