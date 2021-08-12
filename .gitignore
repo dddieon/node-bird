@@ -112,5 +112,6 @@ package-lock.json
 .serverless/
 /front/build
 react-nodebird.pem
+react-nodebird-back.pem
 node_modules
 .next
