@@ -8,7 +8,7 @@ module.exports = {
     "database": "react-nodebird",
     "host": "localhost",
     "dialect": "mysql",
-    "port": "3305"
+    "port": "3306"
   },
   "test": {
     "username": "root",
@@ -16,7 +16,7 @@ module.exports = {
     "database": "react-nodebird",
     "host": "localhost",
     "dialect": "mysql",
-    "port": "3305"
+    "port": "3306"
   },
   "production": {
     "username": "root",
@@ -24,6 +24,6 @@ module.exports = {
     "database": "react-nodebird",
     "host": "localhost",
     "dialect": "mysql",
-    "port": "3305"
+    "port": "3306"
   }
 }
