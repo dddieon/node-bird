@@ -107,3 +107,10 @@ dist
 .vscode-test
 
 package-lock.json
+
+# 내가 추가한 gitginore
+.serverless/
+/front/build
+react-nodebird.pem
+node_modules
+.next
