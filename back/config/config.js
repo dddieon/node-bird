@@ -6,7 +6,7 @@ module.exports = {
     "username": "root",
     "password": process.env.DB_PASSWORD,
     "database": "react-nodebird",
-    "host": "localhost",
+    "host": "127.0.0.1",
     "dialect": "mysql",
     "port": "3306"
   },
@@ -14,7 +14,7 @@ module.exports = {
     "username": "root",
     "password": process.env.DB_PASSWORD,
     "database": "react-nodebird",
-    "host": "localhost",
+    "host": "127.0.0.1",
     "dialect": "mysql",
     "port": "3306"
   },
@@ -22,7 +22,7 @@ module.exports = {
     "username": "root",
     "password": process.env.DB_PASSWORD,
     "database": "react-nodebird",
-    "host": "localhost",
+    "host": "127.0.0.1",
     "dialect": "mysql",
     "port": "3306"
   }
