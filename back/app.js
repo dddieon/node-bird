@@ -6,6 +6,8 @@ const passport = require('passport');
 const dotenv = require('dotenv');
 const morgan = require('morgan');
 const path = require('path');
+const hpp = require('hpp');
+const helmet = require('helmet');
 
 dotenv.config();
 
@@ -16,7 +18,7 @@ const passportConfig = require('./passport');
 //middlewares
 app.use(morgan('dev'));
 app.use(cors({
-  origin: 'http://localhost:3060', // ==> 백엔드와 통신할 프론트 서버
+  origin: ['http://localhost:3060', '172.31.1.96'], // ==> 백엔드와 통신할 프론트 서버
   credentials: true,
 }));
 app.use('/', express.static(path.join(__dirname, "uploads")));
@@ -35,6 +37,15 @@ db.sequelize.sync().then(()=>{
   console.log("db연결 성공")
 }).catch(console.error);
 passportConfig(); // 로그인 passport
+
+if (process.env.NODE_ENV === "production") {
+  // 배포모드일 때 로그가 자세해서 접속자의 아이피 등을 볼 수 있음 (ip 차단 가능)
+  app.use(morgan("combined"));
+  app.use(hpp());
+  app.use(helmet());
+} else {
+  app.use(morgan("dev"));
+}
 
 const postRouter = require('./routes/post');
 const postsRouter = require('./routes/posts');
