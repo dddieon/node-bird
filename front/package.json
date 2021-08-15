@@ -18,6 +18,8 @@
     "babel-plugin-styled-components": "^1.13.2",
     "cross-env": "^7.0.3",
     "faker": "^5.5.3",
+    "helmet": "^4.6.0",
+    "hpp": "^0.2.3",
     "immer": "^9.0.3",
     "moment": "^2.29.1",
     "next": "^10.2.3",
