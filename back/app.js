@@ -16,11 +16,6 @@ const db = require("./models");
 const passportConfig = require('./passport');
 
 //middlewares
-app.use(morgan('dev'));
-app.use(cors({
-  origin: ['http://localhost:3060', 'http://3.36.95.105'], // ==> 백엔드와 통신할 프론트 서버
-  credentials: true,
-}));
 app.use('/', express.static(path.join(__dirname, "uploads")));
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
@@ -42,9 +37,17 @@ if (process.env.NODE_ENV === "production") {
   // 배포모드일 때 로그가 자세해서 접속자의 아이피 등을 볼 수 있음 (ip 차단 가능)
   app.use(morgan("combined"));
   app.use(hpp());
-  app.use(helmet());
+  app.use(helmet({ contentSecurityPolicy: false }));
+  app.use(cors({
+    origin: ['http://localhost:3060', 'http://3.36.95.105'], // ==> 백엔드와 통신할 프론트 서버
+    credentials: true,
+  }));
 } else {
   app.use(morgan("dev"));
+  app.use(cors({
+    origin: true,
+    credentials: true,
+  }));
 }
 
 const postRouter = require('./routes/post');
