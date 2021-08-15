@@ -18,7 +18,7 @@ const passportConfig = require('./passport');
 //middlewares
 app.use(morgan('dev'));
 app.use(cors({
-  origin: ['http://localhost:3060', '172.31.1.96'], // ==> 백엔드와 통신할 프론트 서버
+  origin: ['http://localhost:3060', '3.36.95.105'], // ==> 백엔드와 통신할 프론트 서버
   credentials: true,
 }));
 app.use('/', express.static(path.join(__dirname, "uploads")));
