@@ -41,12 +41,16 @@ const postsRouter = require('./routes/posts');
 const userRouter = require('./routes/user');
 const hashtagRouter = require('./routes/hashtag');
 
+app.get('/', (req, res) => {
+  res.send('hello express');
+});
+
 app.use("/post", postRouter);
 app.use("/posts", postsRouter);
 app.use("/user", userRouter);
 app.use("/hashtag", hashtagRouter);
 
 
-app.listen(3065, () => {
+app.listen(80, () => {
   console.log("서버실행중", )
 })
