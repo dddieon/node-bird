@@ -4,8 +4,9 @@ import axios from "axios";
 
 import postSaga from "./post";
 import userSaga from "./user";
+import {backUrl} from "../config/config";
 
-axios.defaults.baseURL = "http://localhost:3065"; // ==> 프론트와 통신할 백엔드 서버
+axios.defaults.baseURL = backUrl; // ==> 프론트와 통신할 백엔드 서버
 axios.defaults.withCredentials = true;
 
 // 1. all은 배열을 받아와 한꺼번에 실행
