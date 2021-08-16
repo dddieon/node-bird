@@ -23,7 +23,12 @@ app.use(cookieParser());
 app.use(session({
   saveUninitialized: false,
   resave: false,
-  secret: process.env.COOKIE_SECRET
+  secret: process.env.COOKIE_SECRET,
+  cookie: {
+    httpOnly: true,
+    secure: false,
+    domain: process.env.NODE_ENv === "production" && '.nodebird.com'
+  }
 }));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -39,7 +44,7 @@ if (process.env.NODE_ENV === "production") {
   app.use(hpp());
   app.use(helmet({ contentSecurityPolicy: false }));
   app.use(cors({
-    origin: ['http://localhost:3060', 'http://3.36.95.105'], // ==> 백엔드와 통신할 프론트 서버
+    origin: ['http://localhost:3060', 'https://api.nodebird.com'], // ==> 백엔드와 통신할 프론트 서버
     credentials: true,
   }));
 } else {
