@@ -27,7 +27,7 @@ app.use(session({
   cookie: {
     httpOnly: true,
     secure: false,
-    domain: process.env.NODE_ENv === "production" && '.ddieon.com'
+    domain: process.env.NODE_ENV === "production" && '.ddieon.com'
   }
 }));
 app.use(passport.initialize());
