@@ -253,7 +253,7 @@ router.post("/", isLoggedIn, upload.none() , async (req,res, next) => {
 
 router.post("/images", isLoggedIn, upload.array('image') , async (req,res, next) => { // POST /post/images
   console.log(req.files);
-  res.json(req.files.map(v => v.location)); // 경로관련인 location만 프론트로
+  res.json(req.files.map(v => v.location.replace(/\/original\//, '/thumb/'))); // 원본 대신 thumb를 프론트에서 본다
 })
 
 module.exports = router;
