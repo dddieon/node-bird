@@ -19,7 +19,7 @@ exports.handlerResize = async (event, context, callback) => {
       Bucket,
       Key: `thumb/${filename}`,
       Body: resizedImage
-    });
+    }).promise(); // promise 필수
     console.log('put', resizedImage.length, "썸네일 용량");
     return callback(null, `thumb/${filename}`);
   } catch(e) {
