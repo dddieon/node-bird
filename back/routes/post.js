@@ -2,6 +2,9 @@ const express = require('express');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const multerS3 = require('multer-s3');
+const AWS = require('aws-sdk');
+
 
 const {Post, Image, Comment, User, Hashtag} = require('../models');
 const {isLoggedIn} = require('./middlewares');
@@ -44,70 +47,6 @@ router.get('/:postId', async (req, res, next) => {
   }
 });
 
-// ==== 이미지 업로드용 ====
-const upload = multer({
-  storage: multer.diskStorage({
-    destination(req, file, done) {
-      done(null, "uploads");
-    },
-    filename(req, file, done) { // file_name.png
-      const ext = path.extname(file.originalname); // = .png
-      const basename = path.basename(file.originalname, ext) // = file_name 을 추출
-      done(null, basename  + '_' + new Date().getTime() + ext ); // file_name1847578... .png
-    },
-  }), // 저장위치 설정
-  limits: {fileSize: 20 * 1024 * 1024} // 20mb
-})
-
-router.post("/", isLoggedIn, upload.none() , async (req,res, next) => {
-  try {
-    const hashtags = req.body.content.match(/#[^\s#]+/g);
-    const post = await Post.create({
-      content: req.body.content,
-      UserId: req.user.id, // ★ passport.js - 디시리얼라이즈 기능
-    })
-    if (hashtags) {
-      const hashTagResult = await Promise.all(hashtags.map(tag => Hashtag.findOrCreate( //★ 중복없이 생성
-        {where:
-            {name: tag.slice(1).toLowerCase()}
-        })
-      ));
-      await post.addHashtags(hashTagResult.map(v => v[0])); // [[#노드, true], [#리액트, true]]라서
-    }
-    if (req.body.image) {
-      if (Array.isArray(req.body.image)) { // 이미지를 여러 개 올리면 image: [제로초.png, 부기초.png]
-        const images = await Promise.all(req.body.image.map((image) => Image.create({ src: image })));
-        await post.addImages(images);
-      } else { // 이미지를 하나만 올리면 image: 제로초.png
-        const image = await Image.create({ src: req.body.image });
-        await post.addImages(image);
-      }
-    }
-    const fullPost = await Post.findOne({ // !! 테이블 조인 !!
-      where: { id: post.id },
-      include: [{
-        model: Image, // !! 게시글에 달린 이미지 !!
-      }, {
-        model: Comment, // !! 게시글에 달린 댓글 !!
-        include:[{
-          model: User,
-          attributes: ['id', 'nickname'],
-        }]
-      }, {
-        model: User, // !! 게시글 작성자 !!
-        attributes: ['id', 'nickname'],
-      }, {
-        model: User,  // !! 게시글 좋아요한 사람!!
-        as: 'Likers',
-        attributes: ['id']
-      }]
-    })
-    res.status(201).json(fullPost);
-  } catch(error) {
-    console.error(error);
-    next(error);
-  }
-})
 
 router.post(`/:postId/comment`, isLoggedIn, async (req,res, next) => {
   try {
@@ -245,9 +184,76 @@ router.delete('/:postId', isLoggedIn, async (req, res, next) => { // DELETE /pos
   }
 });
 
+// ==== 이미지 업로드용 ====
+AWS.config.update({
+  accessKeyId: process.env.S3_ACCESS_KEY_ID,
+  secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
+  region: 'ap-northeast-2'
+})
+const upload = multer({
+  storage: multerS3({
+    s3: new AWS.S3(), // 버킷권한접근
+    bucket: 'ddieon', // 버킷명
+    key(req, file, cb) {
+      cb(null, `original/${Date.now()}_${path.basename(file.originalname)}`) // 경로
+    }
+  }), // 저장위치 설정 끝
+  limits: {fileSize: 20 * 1024 * 1024} // 20mb
+})
+
+router.post("/", isLoggedIn, upload.none() , async (req,res, next) => {
+  try {
+    const hashtags = req.body.content.match(/#[^\s#]+/g);
+    const post = await Post.create({
+      content: req.body.content,
+      UserId: req.user.id, // ★ passport.js - 디시리얼라이즈 기능
+    })
+    if (hashtags) {
+      const hashTagResult = await Promise.all(hashtags.map(tag => Hashtag.findOrCreate( //★ 중복없이 생성
+        {where:
+            {name: tag.slice(1).toLowerCase()}
+        })
+      ));
+      await post.addHashtags(hashTagResult.map(v => v[0])); // [[#노드, true], [#리액트, true]]라서
+    }
+    if (req.body.image) {
+      if (Array.isArray(req.body.image)) { // 이미지를 여러 개 올리면 image: [제로초.png, 부기초.png]
+        const images = await Promise.all(req.body.image.map((image) => Image.create({ src: image })));
+        await post.addImages(images);
+      } else { // 이미지를 하나만 올리면 image: 제로초.png
+        const image = await Image.create({ src: req.body.image });
+        await post.addImages(image);
+      }
+    }
+    const fullPost = await Post.findOne({ // !! 테이블 조인 !!
+      where: { id: post.id },
+      include: [{
+        model: Image, // !! 게시글에 달린 이미지 !!
+      }, {
+        model: Comment, // !! 게시글에 달린 댓글 !!
+        include:[{
+          model: User,
+          attributes: ['id', 'nickname'],
+        }]
+      }, {
+        model: User, // !! 게시글 작성자 !!
+        attributes: ['id', 'nickname'],
+      }, {
+        model: User,  // !! 게시글 좋아요한 사람!!
+        as: 'Likers',
+        attributes: ['id']
+      }]
+    })
+    res.status(201).json(fullPost);
+  } catch(error) {
+    console.error(error);
+    next(error);
+  }
+})
+
 router.post("/images", isLoggedIn, upload.array('image') , async (req,res, next) => { // POST /post/images
   console.log(req.files);
-  res.json(req.files.map(v => v.filename));
+  res.json(req.files.map(v => v.location)); // 경로관련인 location만 프론트로
 })
 
 module.exports = router;
