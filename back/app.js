@@ -44,7 +44,7 @@ if (process.env.NODE_ENV === "production") {
   app.use(hpp());
   app.use(helmet({ contentSecurityPolicy: false }));
   app.use(cors({
-    origin: ['http://localhost:3060', 'http://ddieon.com'], // ==> 백엔드와 통신할 프론트 서버
+    origin: 'http://ddieon.com', // ==> 백엔드와 통신할 프론트 서버
     credentials: true,
   }));
 } else {
